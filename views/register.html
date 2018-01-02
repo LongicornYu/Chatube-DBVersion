@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+
+<!--
+	This file is rendered by express.js, when the home url of the chat is opened in a browser.
+	It doesn't do much, except showing the create button for the chat.
+ -->
+
+<html>
+
+<head>
+
+	<title>Chatube</title>
+	<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+	<link type="text/css" rel="stylesheet" href="css/stylesheet.css" />
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans Condensed:300italic,300,700" rel="stylesheet" type="text/css">
+
+
+</head>
+
+<body>
+	<header class="homebanner">
+
+			<h1 class="homebannertext">
+				<img src="img/chatsmalllogo.png" alt="chatlogo" id="chatsmalllogo" />
+				<a href="" id="logo">ChatTube</a>
+			</h1>
+
+	</header>
+
+	<section>
+
+		<div class="homesection">
+			<div class="infoConnected">
+				<div class="signin-form profile">
+					<h3>Register</h3>
+					
+					<div class="login-form">
+						<form action="/register" method="post">
+							<input type="text" name="email" placeholder="E-mail" required="">
+							<input type="text" name="username" placeholder="Username" required="">
+							<input type="password" name="password" placeholder="Password" required="">
+							<input type="password" name="passwordConf" placeholder="Confirm Password" required="">
+							<input type="submit" value="REGISTER">
+						</form>
+					</div>
+					<p><a href="/term"> By clicking register, I agree to your terms</a></p>
+				</div>
+			</div>
+		</div>
+		<script>
+		    $(() => {
+		        //getChats()
+
+		        $("#yourEnter").click(() => {
+		        	console.log("clicked");
+		            var chatMessage = {
+		                username: $("#name").val(), email: $("#email").val(), password:$("#password").val()
+		            }
+		            postChat(chatMessage)
+		        })
+		    })
+
+		    function postChat(chat) {
+		    	console.log(chat);
+		        $.post("https://localhost:1024/register", chat)
+		    }
+
+		   /* function getChats() {
+		        $.get("/login", (chats) => {
+		            chats.forEach(addChat)
+		        })
+		    }
+
+		    function addChat(chatObj) {
+		        $("#messages").append(`<h5>${chatObj.name} </h5><p>${chatObj.chat}</p>`);
+		    }*/
+
+		</script>
+
+
+	</section>
+
+</body>
+</html>
