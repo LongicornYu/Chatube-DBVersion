@@ -47,37 +47,6 @@
 				</div>
 			</div>
 		</div>
-		<script>
-		    $(() => {
-		        //getChats()
-
-		        $("#yourEnter").click(() => {
-		        	console.log("clicked");
-		            var chatMessage = {
-		                username: $("#name").val(), email: $("#email").val(), password:$("#password").val()
-		            }
-		            postChat(chatMessage)
-		        })
-		    })
-
-		    function postChat(chat) {
-		    	console.log(chat);
-		        $.post("https://localhost:1024/register", chat)
-		    }
-
-		   /* function getChats() {
-		        $.get("/login", (chats) => {
-		            chats.forEach(addChat)
-		        })
-		    }
-
-		    function addChat(chatObj) {
-		        $("#messages").append(`<h5>${chatObj.name} </h5><p>${chatObj.chat}</p>`);
-		    }*/
-
-		</script>
-
-
 	</section>
 
 </body>

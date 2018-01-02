@@ -21,7 +21,10 @@ var UserSchema = new mongoose.Schema({
   passwordConf: {
     type: String,
     required: true,
-  }
+  },
+  friends: [{
+    type: String
+  }]
 });
 
 //authenticate input against database

@@ -16,7 +16,7 @@ var User = require('../models/user');
 
 
 module.exports = function(app,io){
-
+	app.set('view engine', 'ejs');
 	app.use(bodyParser.json())
 	app.use(bodyParser.urlencoded({ extended: false }))
 
@@ -42,38 +42,6 @@ module.exports = function(app,io){
 		// Render views/home.html
 		res.render('term');
 	});
-
-	/*app.post("/register", async (req, res) => {
-	    try {
-	        var user = new User(req.body)
-	        console.log(req.body);
-	        console.log(user);
-	        await user.save()
-	        res.sendStatus(200)
-	        //Emit the event
-	        //io.emit("chat", req.body)
-	    } catch (error) {
-	        res.sendStatus(500)
-	        console.error(error)
-	    }
-	})
-
-
-
-	app.post("/login", async (req, res) => {
-	    try {
-	        var user = new User(req.body)
-	        console.log(req.body);
-	        console.log(user);
-	        await user.save()
-	        res.sendStatus(200)
-	        //Emit the event
-	        //io.emit("chat", req.body)
-	    } catch (error) {
-	        res.sendStatus(500)
-	        console.error(error)
-	    }
-	})*/
 
 
 	app.post('/register', function (req, res, next) {
@@ -102,7 +70,7 @@ module.exports = function(app,io){
 	        return next(error);
 	      } else {
 	        req.session.userId = user._id;
-	        return res.redirect('/profile');
+	        return res.render('chat', {user:user});
 	      }
 	    });
 
@@ -122,9 +90,19 @@ module.exports = function(app,io){
 	        return next(err);
 	      } else {
 	        req.session.userId = user._id;
-	        return res.redirect('/profile');
+	        return res.render('chat', {user:user});
 	      }
 	    });
+	  } else {
+	    var err = new Error('All fields required.');
+	    err.status = 400;
+	    return next(err);
+	  }
+	})
+
+	app.post('/friend', function (req, res, next) {
+	  if (req.body.friendEmail) {
+	    //Check if friend already added
 	  } else {
 	    var err = new Error('All fields required.');
 	    err.status = 400;
@@ -145,7 +123,7 @@ module.exports = function(app,io){
 	          err.status = 400;
 	          return next(err);
 	        } else {
-	          return res.send('<h1>Name: </h1>' + user.username + '<h2>Mail: </h2>' + user.email + '<br><a type="button" href="/logout">Logout</a>')
+	          res.render('profile', {user: user});
 	        }
 	      }
 	    });
@@ -172,6 +150,23 @@ module.exports = function(app,io){
 
 		// Render the chant.html view
 		res.render('chat');
+	});
+
+	app.get('/chat', function(req,res,next){
+		User.findById(req.session.userId)
+	    .exec(function (error, user) {
+	      if (error) {
+	        return next(error);
+	      } else {
+	        if (user === null) {
+	          var err = new Error('Not authorized! Go back!');
+	          err.status = 400;
+	          return next(err);
+	        } else {
+	          res.render('chat', {user: user});
+	        }
+	      }
+	    });
 	});
 
 	// Initialize a new socket.io application, named 'chat'
