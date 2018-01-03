@@ -3,13 +3,13 @@ var mongoose = require('mongoose');
 var MessageSchema = new mongoose.Schema({
   toUserId: {
     type: String,
-    unique: true,
+    unique: false,
     required: true,
     trim: true
   },
-  fromBUserId: {
+  fromUserId: {
     type: String,
-    unique: true,
+    unique: false,
     required: true,
     trim: true
   },

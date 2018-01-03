@@ -65,6 +65,7 @@ module.exports = function(app,io){
 	      username: req.body.username,
 	      password: req.body.password,
 	      passwordConf: req.body.passwordConf,
+	      avatar: req.body.avatar
 	    }
 
 	    User.create(userData, function (error, user) {
@@ -72,7 +73,7 @@ module.exports = function(app,io){
 	        return next(error);
 	      } else {
 	        req.session.userId = user._id;
-	        return res.render('chat', {user:user, friend:null});
+	        return res.render('chat', {user:user, friend:null, chat:null, messages:null});
 	      }
 	    });
 
@@ -92,7 +93,7 @@ module.exports = function(app,io){
 	        return next(err);
 	      } else {
 	        req.session.userId = user._id;
-	        return res.render('chat', {user:user, friend:null});
+	        return res.render('chat', {user:user, friend:null, chat:null, messages:null});
 	      }
 	    });
 	  } else {
@@ -235,7 +236,7 @@ module.exports = function(app,io){
 	          err.status = 400;
 	          return next(err);
 	        } else {
-	          res.render('chat', {user: user, friend: null});
+	          res.render('chat', {user: user, friend: null, chat:null, messages:null});
 	        }
 	      }
 	    });
@@ -250,23 +251,10 @@ module.exports = function(app,io){
 		socket.on('load',function(data){
 
 			var room = findClientsSocket(io,data);
-			if(room.length === 0 ) {
-
-				socket.emit('peopleinchat', {number: 0});
-			}
-			else if(room.length === 1) {
-
-				socket.emit('peopleinchat', {
-					number: 1,
-					user: room[0].username,
-					avatar: room[0].avatar,
-					id: data
-				});
-			}
-			else if (room.length >=2)
-			{
-				chat.emit('tooMany', {boolean: true});
-			}
+			console.log(room.length);
+			
+			socket.emit('peopleinchat', {number: room.length});
+			
 		});
 
 		// When the client emits 'login', save his name and avatar,
@@ -414,6 +402,20 @@ module.exports = function(app,io){
 
 		// Handle the sending of messages
 		socket.on('msg', function(data){
+			console.log(data);
+			var messageData = {
+		      toUserId: data.sendtoUserId,
+		      fromUserId: data.sendfromUserId,
+		      sentDatetime: new Date(),
+		      chatId: data.chatId,
+		      message: data.msg
+		    }
+
+		    Message.create(messageData, function (error, user) {
+		      if (error) {
+		        console.log(error);
+		      } 
+		    });
 			// When the server receives a message, it sends it to the other person in the room.
 			socket.broadcast.to(socket.room).emit('receive', {isImage: data.isImage, msg: data.msg, user: data.user, img: data.img});
 		});

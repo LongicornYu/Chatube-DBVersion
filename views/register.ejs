@@ -10,6 +10,7 @@
 <head>
 
 	<title>Chatube</title>
+	<link type="text/css" rel="stylesheet" href="../css/stylesheet.css" />
 	<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
 	<link type="text/css" rel="stylesheet" href="css/stylesheet.css" />
 	<link href="https://fonts.googleapis.com/css?family=Open+Sans Condensed:300italic,300,700" rel="stylesheet" type="text/css">
@@ -32,14 +33,40 @@
 		<div class="homesection">
 			<div class="infoConnected">
 				<div class="signin-form profile">
-					<h3>Register</h3>
-					
+					<table class="avatarTable">
+						<tr class="hover08">
+							<td><div ><figure><img class="avatarSelectorImg selected" src = "../img/avatar/256_1.png"></img></figure></div></td>
+							<td><div ><figure><img class="avatarSelectorImg" src = "../img/avatar/256_2.png"></img></figure></div></td>
+							<td><div ><figure><img class="avatarSelectorImg" src = "../img/avatar/256_3.png"></img></figure></div></td>
+							<td><div ><figure><img class="avatarSelectorImg" src = "../img/avatar/256_4.png"></img></figure></div></td>
+						</tr>
+						<tr class="hover08">
+							<td><div><figure><img class="avatarSelectorImg" src = "../img/avatar/256_5.png"></img></figure></div></td>
+							<td><div><figure><img class="avatarSelectorImg" src = "../img/avatar/256_6.png"></img></figure></div></td>
+							<td><div><figure><img class="avatarSelectorImg" src = "../img/avatar/256_7.png"></img></figure></div></td>
+							<td><div><figure><img class="avatarSelectorImg" src = "../img/avatar/256_8.png"></img></figure></div></td>
+						</tr>
+						<tr class="hover08">
+							<td><div><figure><img class="avatarSelectorImg" src = "../img/avatar/256_9.png"></img></figure></div></td>
+							<td><div><figure><img class="avatarSelectorImg" src = "../img/avatar/256_10.png"></img></figure></div></td>
+							<td><div><figure><img class="avatarSelectorImg" src = "../img/avatar/256_11.png"></img></figure></div></td>
+							<td><div><figure><img class="avatarSelectorImg" src = "../img/avatar/256_12.png"></img></figure></div></td>
+						</tr>
+						<tr class="hover08">
+							<td><div><figure><img class="avatarSelectorImg" src = "../img/avatar/256_13.png"></img></figure></div></td>
+							<td><div><figure><img class="avatarSelectorImg" src = "../img/avatar/256_14.png"></img></figure></div></td>
+							<td><div><figure><img class="avatarSelectorImg" src = "../img/avatar/256_15.png"></img></figure></div></td>
+							<td><div><figure><img class="avatarSelectorImg" src = "../img/avatar/256_16.png"></img></figure></div></td>
+						</tr>
+					</table>
+
 					<div class="login-form">
 						<form action="/register" method="post">
 							<input type="text" name="email" placeholder="E-mail" required="">
 							<input type="text" name="username" placeholder="Username" required="">
 							<input type="password" name="password" placeholder="Password" required="">
 							<input type="password" name="passwordConf" placeholder="Confirm Password" required="">
+  							<input type="hidden" name="avatar" id="avatarInput" value="../img/avatar/256_1.png">
 							<input type="submit" value="REGISTER">
 						</form>
 					</div>
@@ -48,6 +75,17 @@
 			</div>
 		</div>
 	</section>
+	<script>
+		$('.avatarSelectorImg').click(function(){
+	   		$('.avatarSelectorImg').removeClass('selected'); // removes the previous selected class
+	   		$(this).addClass('selected'); // adds the class to the clicked image
+	   		$("#avatarInput").val($(".avatarSelectorImg.selected").attr("src"));
+		});
 
+
+
+
+	</script>
 </body>
+
 </html>

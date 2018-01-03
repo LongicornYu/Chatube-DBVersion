@@ -452,16 +452,7 @@
 			window.emojiPicker.discover();
 		});
 
-		$('.avatarSelectorImg').click(function(){
-   		$('.avatarSelectorImg').removeClass('selected'); // removes the previous selected class
-   		$(this).addClass('selected'); // adds the class to the clicked image
-		});
-
-		$('.youravatarSelectorImg').click(function(){
-			$('.youravatarSelectorImg').removeClass('selected'); // removes the previous selected class
-			$(this).addClass('selected'); // adds the class to the clicked image
-		});
-
+		
 		$('#btnVideoChat').click(function(){
 			//$('.videoChatInviteWait').fadeIn(1200);
 			socket.emit("videoChat", {senderId: socket.io.engine.id});

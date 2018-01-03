@@ -3,13 +3,13 @@ var mongoose = require('mongoose');
 var ChatSchema = new mongoose.Schema({
   chatAUserId: {
     type: String,
-    unique: true,
+    unique: false,
     required: true,
     trim: true
   },
   chatBUserId: {
     type: String,
-    unique: true,
+    unique: false,
     required: true,
     trim: true
   }
