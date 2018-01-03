@@ -23,7 +23,8 @@ var UserSchema = new mongoose.Schema({
     required: true,
   },
   friends: [{
-    type: String
+    id : String,
+    username : String
   }]
 });
 
@@ -48,6 +49,19 @@ UserSchema.statics.authenticate = function (email, password, callback) {
     });
 }
 
+UserSchema.statics.findUserByEmail = function (email, callback) {
+  User.findOne({ email: email })
+    .exec(function (err, user) {
+      if (err) {
+        return callback(err, null)
+      }
+      else {
+        return callback(null, user);
+      }
+    });
+}
+
+
 //hashing a password before saving it to the database
 UserSchema.pre('save', function (next) {
   var user = this;
@@ -63,4 +77,3 @@ UserSchema.pre('save', function (next) {
 
 var User = mongoose.model('User', UserSchema);
 module.exports = User;
-

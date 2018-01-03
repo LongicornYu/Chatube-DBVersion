@@ -29,6 +29,7 @@
 		    	$("#videoChatArea").draggable();
 			});
 	</script>
+
 	<style>
 				#container {
 						position: relative;
@@ -95,6 +96,9 @@
 	</header>
 
 	<div class="area"></div><nav class="main-menu">
+						<ul>
+						&nbsp;&nbsp;Account
+						</ul>
             <ul class="profile">
                 <li>
                     <a href="/profile">
@@ -103,9 +107,25 @@
                            <%= user.username%>
                         </span>
                     </a>
-                  
+
                 </li>
             </ul>
+						<ul>
+						&nbsp;&nbsp;Friends
+						</ul>
+
+						<% for(var i=0; i < user.friends.length; i++) { %>
+							<li>
+									<a href="/loadchat/<%= user.friends[i].id %>">
+											<i class="fa fa-user fa-2x"></i>
+											<span class="nav-text">
+												 <%= user.friends[i].username %>
+											</span>
+									</a>
+
+							</li>
+						<% } %>
+
 
             <ul class="logout">
                 <li>
@@ -115,7 +135,7 @@
                             Logout
                         </span>
                     </a>
-                </li>  
+                </li>
             </ul>
         </nav>
 
@@ -614,6 +634,15 @@ $('.send-button').click(function() {$('#chatform').submit()});
 
 	<script src="../js/moment.min.js"></script>
 	<script src="/socket.io/socket.io.js"></script>
+	<script type="text/javascript">
+    var friendObj = <%- JSON.stringify(friend) %>
+
+	  var userObj = <%- JSON.stringify(user) %>
+
+		var chatObj = <%- JSON.stringify(chat) %>
+
+		var messagesObj = <%- JSON.stringify(messages) %>
+  </script>
 	<script src="../js/chat.js"></script>
 	<script src="../js/voiceinput.js"></script>
 	<script src="../js/fireworks.js"></script>

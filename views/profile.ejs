@@ -45,6 +45,15 @@
 			</form>
 
 			<h1> Friends</h1>
+			<table>
+
+				<% for(var i=0; i < user.friends.length; i++) { %>
+				   <tr>
+				     <td><%= user.friends[i].username %></td>
+				   </tr>
+				<% } %>
+			</table>
+
 			<form action="/friend" method="post">
 				<input type="text" name="friendEmail" placeholder="friend's E-mail" required="">
 				<div class="tp">

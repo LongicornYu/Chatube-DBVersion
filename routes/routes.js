@@ -10,6 +10,8 @@ var http = require('http');
 var mongoose = require("mongoose");
 var bodyParser = require("body-parser")
 var User = require('../models/user');
+var Chat = require('../models/chat');
+var Message = require('../models/message');
 
 // Export a function, so that we can pass
 // the app and io instances from the app.js file:
@@ -70,7 +72,7 @@ module.exports = function(app,io){
 	        return next(error);
 	      } else {
 	        req.session.userId = user._id;
-	        return res.render('chat', {user:user});
+	        return res.render('chat', {user:user, friend:null});
 	      }
 	    });
 
@@ -90,7 +92,7 @@ module.exports = function(app,io){
 	        return next(err);
 	      } else {
 	        req.session.userId = user._id;
-	        return res.render('chat', {user:user});
+	        return res.render('chat', {user:user, friend:null});
 	      }
 	    });
 	  } else {
@@ -103,6 +105,38 @@ module.exports = function(app,io){
 	app.post('/friend', function (req, res, next) {
 	  if (req.body.friendEmail) {
 	    //Check if friend already added
+			User.findUserByEmail(req.body.friendEmail, function (error, friend) {
+				console.log(error);
+				console.log(friend);
+	      if (error || !friend) {
+	        var err = new Error('User doesnt exist.');
+	        err.status = 401;
+	        return next(err);
+	      } else {
+					User.findById(req.session.userId).exec(function (error, user) {
+			      if (error) {
+			        return next(error);
+			      } else {
+			        if (user === null) {
+			          var err = new Error('Not authorized! Go back!');
+			          err.status = 400;
+			          return next(err);
+			        } else {
+								var fnd1 = {username: friend.username , id:friend._id};
+			          user.friends.push(fnd1);
+								user.save();
+
+								var fnd2 = {username: user.username , id:user._id};
+								friend.friends.push(fnd2);
+								friend.save();
+								console.log(user);
+				        return res.render('profile', {user:user});
+			        }
+			      }
+			    });
+	      }
+	    });
+
 	  } else {
 	    var err = new Error('All fields required.');
 	    err.status = 400;
@@ -147,9 +181,47 @@ module.exports = function(app,io){
 	});
 
 	app.get('/chat/:id', function(req,res){
+		User.findById(req.session.userId).exec(function (error, user) {
+			User.findById(req.params.id).exec(function (error, friend)
+			{
+				Chat.findOne({
+	        $or: [{
+	            'chatAUserId': user._id
+	        }, {
+	            'chatAUserId': friend._id
+	        }]}).exec(function (err, chat) {
+						if(chat)
+						{
+							Message.find({ chatId: chat._id }).exec(function (err, messages)
+							{
+									res.render('chat', {user:user, friend:friend, chat: chat, messages:messages});
+							});
+						}
+						else {
+							var chatData = {
+					      chatAUserId: user._id,
+					      chatBUserId: friend._id
+					    }
 
+					    Chat.create(chatData, function (error, chat) {
+					      if (error) {
+					        return next(error);
+					      } else {
+					        req.session.userId = user._id;
+									req.session.chatId = chat._id;
+									res.render('chat', {user:user, friend:friend, chat: chat, messages:null});
+					      }
+					    });
+
+						}
+					});
+			});
+	});
+});
+
+	app.get('/loadchat/:id', function(req,res){
 		// Render the chant.html view
-		res.render('chat');
+		res.redirect('/chat/'+req.params.id);
 	});
 
 	app.get('/chat', function(req,res,next){
@@ -163,7 +235,7 @@ module.exports = function(app,io){
 	          err.status = 400;
 	          return next(err);
 	        } else {
-	          res.render('chat', {user: user});
+	          res.render('chat', {user: user, friend: null});
 	        }
 	      }
 	    });

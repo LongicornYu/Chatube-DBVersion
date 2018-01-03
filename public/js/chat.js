@@ -2,9 +2,6 @@
 
 $(function(){
 
-	// getting the id of the room from the url
-	var id = Number(window.location.pathname.match(/\/chat\/(\d+)$/)[1]);
-
 	// connect to the socket
 	var socket = io();
 
@@ -14,6 +11,8 @@ $(function(){
 		vartar = "",
 		img = "",
 		friend = "";
+
+	var id = chatObj._id;
 
 	// cache some jQuery objects
 	var section = $(".section"),
@@ -58,7 +57,6 @@ $(function(){
 		leftImage = $("#leftImage"),
 		topImage = $("#topImage"),
 		noMessagesImage = $("#noMessagesImage");
-
 
 	// on connection to server get the id of person's room
 	socket.on('connect', function(){
