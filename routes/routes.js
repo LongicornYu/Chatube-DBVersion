@@ -252,9 +252,9 @@ module.exports = function(app,io){
 
 			var room = findClientsSocket(io,data);
 			console.log(room.length);
-			
+
 			socket.emit('peopleinchat', {number: room.length});
-			
+
 		});
 
 		// When the client emits 'login', save his name and avatar,
@@ -414,7 +414,7 @@ module.exports = function(app,io){
 		    Message.create(messageData, function (error, user) {
 		      if (error) {
 		        console.log(error);
-		      } 
+		      }
 		    });
 			// When the server receives a message, it sends it to the other person in the room.
 			socket.broadcast.to(socket.room).emit('receive', {isImage: data.isImage, msg: data.msg, user: data.user, img: data.img});

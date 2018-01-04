@@ -62,15 +62,17 @@
 
 					<div class="login-form">
 						<form action="/register" method="post">
-							<input type="text" name="email" placeholder="E-mail" required="">
-							<input type="text" name="username" placeholder="Username" required="">
-							<input type="password" name="password" placeholder="Password" required="">
-							<input type="password" name="passwordConf" placeholder="Confirm Password" required="">
-  							<input type="hidden" name="avatar" id="avatarInput" value="../img/avatar/256_1.png">
-							<input type="submit" value="REGISTER">
+							<input type="text" class="registerField" name="email" placeholder="E-mail" required="">
+							<input type="text" class="registerField" name="username" placeholder="Username" required="">
+							<input type="password" class="registerField" name="password" placeholder="Password" required="">
+							<input type="password" class="registerField" name="passwordConf" placeholder="Confirm Password" required="">
+  						<input type="hidden" name="avatar" id="avatarInput" value="../img/avatar/256_1.png">
+							<input type="submit" id="yourEnter" value="REGISTER">
 						</form>
 					</div>
-					<p><a href="/term"> By clicking register, I agree to your terms</a></p>
+					<br/><br/>
+					<div><a class="loginRegisterlink" href="/login">Login</a>
+							 <a class="loginRegisterlink" href="/term">Privacy Terms</a></div>
 				</div>
 			</div>
 		</div>

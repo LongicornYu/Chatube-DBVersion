@@ -32,17 +32,19 @@
 		<div class="homesection">
 			<div class="infoConnected">
 				<div class="signin-form profile">
-				<h3>Login</h3>
-				
+				<h1 id="loginLogo">Login</h1>
+
 				<div class="login-form">
 					<form action="/login" method="post">
-						<input type="text" name="logemail" placeholder="E-mail" required="">
-						<input type="password" name="logpassword" placeholder="Password" required="">
+						<input type="text" class="loginField" name="logemail" placeholder="E-mail" required="">
+						<input type="password" class="loginField" name="logpassword" placeholder="Password" required="">
 						<div class="tp">
-							<input type="submit" value="LOGIN NOW">
+							<input type="submit" id="yourEnter" value="LOGIN NOW">
 						</div>
 					</form>
-					<p><a href="/register"> Register</a></p>
+					<br/>
+					<br/>
+					<div><a class="loginRegisterlink" href="/register"> Register</a></div>
 				</div>
 			</div>
 		</div>

@@ -36,6 +36,8 @@ var UserSchema = new mongoose.Schema({
 UserSchema.statics.authenticate = function (email, password, callback) {
   User.findOne({ email: email })
     .exec(function (err, user) {
+      console.log(password);
+      console.log(user.password);
       if (err) {
         return callback(err)
       } else if (!user) {
@@ -43,6 +45,11 @@ UserSchema.statics.authenticate = function (email, password, callback) {
         err.status = 401;
         return callback(err);
       }
+
+      bcrypt.hash('test', 10, function (err, hash) {
+          console.log('hash:' + hash);
+      });
+      
       bcrypt.compare(password, user.password, function (err, result) {
         if (result === true) {
           return callback(null, user);

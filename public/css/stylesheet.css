@@ -166,7 +166,7 @@ html {
 	background: rgba(255,255,255,0.5);
 	margin: 0 auto;
 	width: 400px;
-	height: 500px;
+	height: 650px;
 }
 
 .node {
@@ -294,9 +294,8 @@ html {
 	padding-top: 20px;
 }
 .infoConnected {
-	text-align: left;
-	float: right;
-	margin: 50px 80px 0px 0px;
+	--text-align: left;
+	margin: 5px 0px 0px 5px;
 }
 #creatorImage {
 	float: left;
@@ -306,10 +305,11 @@ html {
 	border-radius: 50%;
 }
 
-#yourName {
-	float:left;
+.loginField {
+	display:block;
 	padding-left:10px;
-	width: 150px;
+	width: 40%;
+	min-width:150px;
 	height: 30px;
 	border-radius: 3px;
 	box-shadow:0px 3px 3px #e3e4e6;
@@ -318,13 +318,14 @@ html {
 	border-radius: 3px;
 	box-shadow:0px 3px 3px #e3e4e6;
 	margin-bottom:20px;
+	margin-left:28%;
 	overflow: hidden;
 }
 
-#yourEmail {
-	float:left;
-	padding-left: 10px;
-	width: 200px;
+.registerField {
+	display:block;
+	padding-left:10px;
+	width: 40%;
 	height: 30px;
 	border-radius: 3px;
 	box-shadow:0px 3px 3px #e3e4e6;
@@ -332,7 +333,25 @@ html {
 	border: 1px solid #d1d1d1;
 	border-radius: 3px;
 	box-shadow:0px 3px 3px #e3e4e6;
-	margin-bottom:40px;
+	margin-bottom:20px;
+	margin-left:28%;
+	overflow: hidden;
+}
+
+.profileField {
+	display:block;
+	padding-left:10px;
+	width: 40%;
+	height: 30px;
+	border-radius: 3px;
+	box-shadow:0px 3px 3px #e3e4e6;
+	background-color: #f0f1f3;
+	border: 1px solid #d1d1d1;
+	border-radius: 3px;
+	box-shadow:0px 3px 3px #e3e4e6;
+	margin-bottom:20px;
+	margin-left:28%;
+	overflow: hidden;
 }
 
 #yourEnter {
@@ -347,6 +366,36 @@ html {
 	color:white;
 	font-weight: bold;
 	font-size: 15px;
+	margin-left:35%
+}
+
+.yourEnter {
+	float:left;
+	width: 110px;
+	height: 40px;
+	text-align:center;
+	background-color: #73b4d4;
+	border: none;
+	box-shadow: 3px 3px 3px #efedee;
+	border-radius: 2px;
+	color:white;
+	font-weight: bold;
+	font-size: 15px;
+	margin-left:35%;
+	margin-bottom:20px;
+
+
+}
+
+#loginLogo{
+	padding-top:50px;
+	padding-bottom:50px;
+
+}
+
+.loginRegisterlink {
+	    font-size: 12px;
+	    margin:10px;
 }
 
 /* ----- videoChatInvite-----*/
@@ -1883,8 +1932,8 @@ overflow:scroll;
 }
 
 .main-menu {
-background:#fbfbfb;
-border-right:1px solid #e5e5e5;
+background:#3c4446;
+border-right:1px solid #3c4446;
 position:absolute;
 top:70px;
 bottom:0;
@@ -1986,4 +2035,43 @@ height: 100%;
   font-style: normal;
   font-weight: 300;
   src: local('Titillium WebLight'), local('TitilliumWeb-Light'), url(https://themes.googleusercontent.com/static/fonts/titilliumweb/v2/anMUvcNT0H1YN4FII8wpr24bNCNEoFTpS2BTjF6FB5E.woff) format('woff');
+}
+
+#termSection
+{
+    width: 50%;
+    background-color: black;
+    opacity:  0.9;
+    margin-left:25%;
+		margin-top:10px;
+}
+
+hr.profilehr {
+    overflow: visible; /* For IE */
+    height: 30px;
+    border-style: solid;
+    border-color: grey;
+    border-width: 1px 0 0 0;
+    border-radius: 20px;
+
+}
+hr.profilehr:before { /* Not really supposed to work, but does */
+    display: block;
+    content: "";
+    height: 30px;
+    margin-top: -31px;
+    border-style: solid;
+    border-color: grey;
+    border-width: 0 0 1px 0;
+    border-radius: 20px;
+}
+
+.profileSection{
+	text-align:center;
+	margin-top:20px;
+	background: rgba(255,255,255,0.5);
+	margin: 0 auto;
+	width: 400px;
+	height: auto;
+	overflow:auto;
 }
