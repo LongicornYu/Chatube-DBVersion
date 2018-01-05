@@ -29,7 +29,10 @@ var UserSchema = new mongoose.Schema({
   friends: [{
     id : String,
     username : String
-  }]
+  }],
+  online:{
+    type: Boolean
+  }
 });
 
 //authenticate input against database
@@ -49,7 +52,7 @@ UserSchema.statics.authenticate = function (email, password, callback) {
       bcrypt.hash('test', 10, function (err, hash) {
           console.log('hash:' + hash);
       });
-      
+
       bcrypt.compare(password, user.password, function (err, result) {
         if (result === true) {
           return callback(null, user);

@@ -26,6 +26,16 @@ var MessageSchema = new mongoose.Schema({
     type: String,
     required: true,
     trim: true
+  },
+  fromUserImg: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  fromUsername: {
+    type: String,
+    required: true,
+    trim: true
   }
 });
 

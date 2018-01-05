@@ -65,7 +65,8 @@ module.exports = function(app,io){
 	      username: req.body.username,
 	      password: req.body.password,
 	      passwordConf: req.body.passwordConf,
-	      avatar: req.body.avatar
+	      avatar: req.body.avatar,
+				online: true
 	    }
 
 	    User.create(userData, function (error, user) {
@@ -93,6 +94,8 @@ module.exports = function(app,io){
 	        return next(err);
 	      } else {
 	        req.session.userId = user._id;
+					user.online=true;
+					user.save();
 	        return res.render('chat', {user:user, friend:null, chat:null, messages:null});
 	      }
 	    });
@@ -181,7 +184,9 @@ module.exports = function(app,io){
 		res.redirect('/chat/'+id);
 	});
 
+
 	app.get('/chat/:id', function(req,res){
+		console.log(req.params.id);
 		User.findById(req.session.userId).exec(function (error, user) {
 			User.findById(req.params.id).exec(function (error, friend)
 			{
@@ -262,6 +267,8 @@ module.exports = function(app,io){
 		socket.on('login', function(data) {
 
 			var room = findClientsSocket(io, data.id);
+
+						console.log('get login' + room.length);
 			// Only two people per room are allowed
 			if (room.length < 2) {
 
@@ -269,6 +276,7 @@ module.exports = function(app,io){
 				// their own unique socket object
 
 				socket.username = data.user;
+				socket.userId = data.userId
 				socket.room = data.id;
 				socket.email = data.email
 				socket.avatar = data.avatar;
@@ -280,26 +288,12 @@ module.exports = function(app,io){
 				// Add the client to the room
 				socket.join(data.id);
 
-				if (room.length == 1) {
-					var usernames = [],
-						avatars = [];
 
-					usernames.push(room[0].username);
-					usernames.push(socket.username);
+				chat.in(data.id).emit('startChat', {
+					boolean: true,
+					id: data.id
+				});
 
-					avatars.push(room[0].avatar);
-					avatars.push(socket.avatar);
-
-					// Send the startChat event to all the people in the
-					// room, along with a list of people that are in it.
-
-					chat.in(data.id).emit('startChat', {
-						boolean: true,
-						id: data.id,
-						users: usernames,
-						avatars: avatars
-					});
-				}
 			}
 			else {
 				socket.emit('tooMany', {boolean: true});
@@ -308,6 +302,14 @@ module.exports = function(app,io){
 
 		// Somebody left the chat
 		socket.on('disconnect', function() {
+
+			User.findById(socket.userId).exec(function (error, user) {
+				if (!error && user != null) {
+						user.online=false;
+						user.save();
+				}
+			});
+
 
 			// Notify the other person in the chat room
 			// that his partner has left
@@ -321,6 +323,8 @@ module.exports = function(app,io){
 
 			// leave the room
 			socket.leave(socket.room);
+
+
 		});
 
 		socket.on('videoChat', function(data){
@@ -406,6 +410,8 @@ module.exports = function(app,io){
 			var messageData = {
 		      toUserId: data.sendtoUserId,
 		      fromUserId: data.sendfromUserId,
+					fromUsername: data.user,
+					fromUserImg: data.img,
 		      sentDatetime: new Date(),
 		      chatId: data.chatId,
 		      message: data.msg
