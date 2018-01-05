@@ -414,7 +414,8 @@ module.exports = function(app,io){
 					fromUserImg: data.img,
 		      sentDatetime: new Date(),
 		      chatId: data.chatId,
-		      message: data.msg
+		      message: data.msg,
+					isImageMessage: data.isImage
 		    }
 
 		    Message.create(messageData, function (error, user) {

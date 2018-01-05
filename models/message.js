@@ -36,6 +36,10 @@ var MessageSchema = new mongoose.Schema({
     type: String,
     required: true,
     trim: true
+  },
+  isImageMessage: {
+    type: Boolean,
+    required:true
   }
 });
 

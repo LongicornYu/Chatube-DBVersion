@@ -206,7 +206,7 @@ $(function(){
 					for (var i in messagesObj) {
 					  console.log('get history:'+messagesObj[i]);
 
-						createChatMessage(false,messagesObj[i].message,messagesObj[i].fromUsername,messagesObj[i].fromUserImg,moment(new Date(messagesObj[i].sentDatetime)));
+						createChatMessage(messagesObj[i].isImage,messagesObj[i].message,messagesObj[i].fromUsername,messagesObj[i].fromUserImg,moment(new Date(messagesObj[i].sentDatetime)));
 					}
 				}
 
@@ -270,14 +270,14 @@ $(function(){
 		});
 
 		chatForm.on('submit', function(e){
-
+			console.log('what??');
 			e.preventDefault();
-
-			if (textarea.text().length > 0)
+			console.log('text'+textarea.html());
+			if (textarea.html().length > 0)
 			{
 				// Create a new chat message and display it directly
-
-				showMessage("chatStarted");
+				console.log(textarea.html());
+				//showMessage("chatStarted");
 				if(textarea.html().trim().length) {
 
 					if (textarea.html().includes("<img"))
