@@ -1121,14 +1121,14 @@ footer {
 	right: 0;
 	width:100%;
 	padding-top: 30px;
-	background-color: white;
+	background-color: #e0e0e0;
 	height: 120px;
 	z-index: 150;
 }
 #chatform {
 	width:100%;
 	margin: 0 auto;
-	background-color: white;
+	background-color: #e0e0e0;
 }
 
 #text-input {
@@ -1138,7 +1138,7 @@ footer {
 	float:left;
 	margin:0px 30px 0px 30px;
 	background-color: #f9f9f9;
-	border: 1px solid #cccccc;
+	border: 1px solid #e0e0e0;
 	border-radius: 2px;
 	padding-left: 20px;
 	padding-top: 20px;
@@ -1365,7 +1365,7 @@ body .send-button .icon-wrapper .icon-2 {
 .chatButton:disabled,
 .chatButton[disabled]{
   border: 1px solid #999999;
-  background-color: #cccccc;
+  background-color: #e0e0e0;
   color: red;
 }
 
@@ -1436,7 +1436,7 @@ body .send-button .icon-wrapper .icon-2 {
 }
 
 .actionMenu {
-  background-color: white;
+  background-color: #e0e0e0;
   border-radius: 1rem;
   height:5.2em;
   position: absolute;
@@ -1932,7 +1932,7 @@ overflow:scroll;
 }
 
 .main-menu {
-background: linear-gradient(to bottom, #3c4446, white);
+background: linear-gradient(to bottom, #3c4446, #e0e0e0);
 border-right:1px solid #3c4446;
 position:fixed;
 top:70px;

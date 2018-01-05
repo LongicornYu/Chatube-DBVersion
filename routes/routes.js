@@ -198,7 +198,7 @@ module.exports = function(app,io){
 	        }]}).exec(function (err, chat) {
 						if(chat)
 						{
-							Message.find({ chatId: chat._id }).exec(function (err, messages)
+							Message.find({ chatId: chat._id }).sort('sentDatetime').exec(function (err, messages)
 							{
 									res.render('chat', {user:user, friend:friend, chat: chat, messages:messages});
 							});

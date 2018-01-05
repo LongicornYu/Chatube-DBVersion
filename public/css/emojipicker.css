@@ -99,7 +99,7 @@ img.emoji {
     max-height: 284px;
     overflow: auto;
     line-height: 17px;
-    border: 1px solid #d2dbe3;
+    border: 1px solid white;
     border-radius: 2px;
     -webkit-box-shadow: none;
     box-shadow: none;
