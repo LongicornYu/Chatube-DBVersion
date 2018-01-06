@@ -66,7 +66,7 @@ module.exports = function(app,io){
 	      password: req.body.password,
 	      passwordConf: req.body.passwordConf,
 	      avatar: req.body.avatar,
-				online: true
+		  online: true
 	    }
 
 	    User.create(userData, function (error, user) {
@@ -74,7 +74,8 @@ module.exports = function(app,io){
 	        return next(error);
 	      } else {
 	        req.session.userId = user._id;
-	        return res.render('chat', {user:user, friend:null, chat:null, messages:null});
+	        //return res.render('chat', {user:user, friend:null, chat:null, messages:null});
+	        return res.redirect('/chat');
 	      }
 	    });
 
@@ -94,9 +95,10 @@ module.exports = function(app,io){
 	        return next(err);
 	      } else {
 	        req.session.userId = user._id;
-					user.online=true;
-					user.save();
-	        return res.render('chat', {user:user, friend:null, chat:null, messages:null});
+			user.online=true;
+			user.save();
+	        return res.redirect('/chat');
+	        //return res.render('chat', {user:user, friend:null, chat:null, messages:null});
 	      }
 	    });
 	  } else {
@@ -109,9 +111,7 @@ module.exports = function(app,io){
 	app.post('/friend', function (req, res, next) {
 	  if (req.body.friendEmail) {
 	    //Check if friend already added
-			User.findUserByEmail(req.body.friendEmail, function (error, friend) {
-				console.log(error);
-				console.log(friend);
+		  User.findUserByEmail(req.body.friendEmail, function (error, friend) {
 	      if (error || !friend) {
 	        var err = new Error('User doesnt exist.');
 	        err.status = 401;
@@ -133,7 +133,6 @@ module.exports = function(app,io){
 								var fnd2 = {username: user.username , id:user._id};
 								friend.friends.push(fnd2);
 								friend.save();
-								console.log(user);
 				        return res.render('profile', {user:user});
 			        }
 			      }
@@ -147,27 +146,6 @@ module.exports = function(app,io){
 	    return next(err);
 	  }
 	})
-
-
-// GET route after registering
-	app.get('/profile', function (req, res, next) {
-	  User.findById(req.session.userId)
-	    .exec(function (error, user) {
-	      if (error) {
-	        return next(error);
-	      } else {
-	        if (user === null) {
-	          var err = new Error('Not authorized! Go back!');
-	          err.status = 400;
-	          return next(err);
-	        } else {
-	          res.render('profile', {user: user});
-	        }
-	      }
-	    });
-	});
-
-
 
 	app.get('/videoChat', function(req, res){
 
@@ -186,21 +164,26 @@ module.exports = function(app,io){
 
 
 	app.get('/chat/:id', function(req,res){
-		console.log(req.params.id);
 		User.findById(req.session.userId).exec(function (error, user) {
+
+          User.find({'_id': {'$in' : user.friends.map(a => a.id)}}).exec(function(err, items) {
+          	 friendlist = items;
+
 			User.findById(req.params.id).exec(function (error, friend)
 			{
 				Chat.findOne({
 	        $or: [{
-	            'chatAUserId': user._id
+	            'chatAUserId': user._id,
+							'chatBUserId': friend._id
 	        }, {
-	            'chatAUserId': friend._id
+	            'chatAUserId': friend._id,
+							'chatBUserId': user._id
 	        }]}).exec(function (err, chat) {
 						if(chat)
 						{
 							Message.find({ chatId: chat._id }).sort('sentDatetime').exec(function (err, messages)
 							{
-									res.render('chat', {user:user, friend:friend, chat: chat, messages:messages});
+									res.render('chat', {user:user,friendlist:items, friend:friend, chat: chat, messages:messages});
 							});
 						}
 						else {
@@ -215,13 +198,15 @@ module.exports = function(app,io){
 					      } else {
 					        req.session.userId = user._id;
 									req.session.chatId = chat._id;
-									res.render('chat', {user:user, friend:friend, chat: chat, messages:null});
+									res.render('chat', {user:user, friendlist:items, friend:friend, chat: chat, messages:null});
 					      }
 					    });
 
 						}
 					});
 			});
+		});
+
 	});
 });
 
@@ -241,10 +226,44 @@ module.exports = function(app,io){
 	          err.status = 400;
 	          return next(err);
 	        } else {
-	          res.render('chat', {user: user, friend: null, chat:null, messages:null});
+
+	          User.find({'_id': {'$in' : user.friends.map(a => a.id)}}).exec(function(err, items) {
+	          	 res.render('chat', {user: user, friendlist:items, friend: null, chat:null, messages:null});
+	          });
 	        }
 	      }
 	    });
+	});
+
+	app.get('/logout', function (req, res, next) {
+	  if (req.session) {
+	    // delete session object
+		User.findById(req.session.userId)
+			    .exec(function (error, user) {
+			      if (error) {
+			        return next(error);
+			      } else {
+			        if (user === null) {
+			          var err = new Error('Not authorized! Go back!');
+			          err.status = 400;
+			          return next(err);
+			        } else {
+			          user.online= false;
+			          user.save();
+			        }
+			      }
+			    });
+
+
+
+	    req.session.destroy(function (err) {
+	      if (err) {
+	        return next(err);
+	      } else {
+	        return res.redirect('/');
+	      }
+	    });
+	  }
 	});
 
 	// Initialize a new socket.io application, named 'chat'
@@ -256,7 +275,6 @@ module.exports = function(app,io){
 		socket.on('load',function(data){
 
 			var room = findClientsSocket(io,data);
-			console.log(room.length);
 
 			socket.emit('peopleinchat', {number: room.length});
 
@@ -267,8 +285,6 @@ module.exports = function(app,io){
 		socket.on('login', function(data) {
 
 			var room = findClientsSocket(io, data.id);
-
-						console.log('get login' + room.length);
 			// Only two people per room are allowed
 			if (room.length < 2) {
 
@@ -302,14 +318,6 @@ module.exports = function(app,io){
 
 		// Somebody left the chat
 		socket.on('disconnect', function() {
-
-			User.findById(socket.userId).exec(function (error, user) {
-				if (!error && user != null) {
-						user.online=false;
-						user.save();
-				}
-			});
-
 
 			// Notify the other person in the chat room
 			// that his partner has left
@@ -352,7 +360,6 @@ module.exports = function(app,io){
 	    });
 
 		socket.on('videoChatCancelled', function(data){
-					console.log("video call cancel");
 					chat.in(data.senderId).emit('videoChatSelfCancel', data.senderId);
 					socket.broadcast.to(this.room).emit('videoChatSelfCancel', data.senderId);
 		});
@@ -372,7 +379,6 @@ module.exports = function(app,io){
 		    });
 
 		socket.on('audioChatCancelled', function(data){
-						console.log("audio call cancel");
 						chat.in(data.senderId).emit('audioChatSelfCancel', data.senderId);
 						socket.broadcast.to(this.room).emit('audioChatSelfCancel', data.senderId);
 			});
@@ -406,7 +412,6 @@ module.exports = function(app,io){
 
 		// Handle the sending of messages
 		socket.on('msg', function(data){
-			console.log(data);
 			var messageData = {
 		      toUserId: data.sendtoUserId,
 		      fromUserId: data.sendfromUserId,
@@ -428,7 +433,6 @@ module.exports = function(app,io){
 		});
 
 		socket.on('snapReceived', function(data){
-			console.log(data);
 			chat.in(data.senderId).emit('renderSnap', {buf:data.buf, senderId:data.senderId, user:this.username, img:this.avatar});
 			socket.broadcast.to(this.room).emit('renderSnap', {buf:data.buf, senderId:data.senderId, user:this.username, img:this.avatar});
 		});

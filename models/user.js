@@ -39,8 +39,6 @@ var UserSchema = new mongoose.Schema({
 UserSchema.statics.authenticate = function (email, password, callback) {
   User.findOne({ email: email })
     .exec(function (err, user) {
-      console.log(password);
-      console.log(user.password);
       if (err) {
         return callback(err)
       } else if (!user) {
@@ -49,10 +47,13 @@ UserSchema.statics.authenticate = function (email, password, callback) {
         return callback(err);
       }
 
-      bcrypt.hash('test', 10, function (err, hash) {
-          console.log('hash:' + hash);
-      });
+      if (password === user.password) {
+          return callback(null, user);
+        } else {
+          return callback();
+        }
 
+      /*
       bcrypt.compare(password, user.password, function (err, result) {
         if (result === true) {
           return callback(null, user);
@@ -60,6 +61,7 @@ UserSchema.statics.authenticate = function (email, password, callback) {
           return callback();
         }
       })
+      */
     });
 }
 
@@ -78,14 +80,18 @@ UserSchema.statics.findUserByEmail = function (email, callback) {
 
 //hashing a password before saving it to the database
 UserSchema.pre('save', function (next) {
-  var user = this;
+
+/*  var user = this;
   bcrypt.hash(user.password, 10, function (err, hash) {
     if (err) {
       return next(err);
     }
+    console.log('hash:' + hash);
     user.password = hash;
     next();
   })
+  */
+  next();
 });
 
 

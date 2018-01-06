@@ -13,17 +13,17 @@
 	<title>Chatube</title>
 
 	<link type="text/css" rel="stylesheet" href="../css/stylesheet.css" />
-	<link href = "https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css" rel="stylesheet">
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-	<link href="https://fonts.googleapis.com/css?family=Open+Sans Condensed:300italic,300,700" rel="stylesheet" type="text/css">
-	<link href="../css/emoji.css" rel="stylesheet" type="text/css" />
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-	<script src="../js/emoji.js" type="text/javascript"></script>
 	<link href="../css/emojipicker.css" rel="stylesheet">
+	<link href="../css/emoji.css" rel="stylesheet" type="text/css" />
+  	<link href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet" />
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans Condensed:300italic,300,700" rel="stylesheet" type="text/css">
+	<link href = "https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css" rel="stylesheet">
+	<script src="../js/emoji.js" type="text/javascript"></script>
 	<script src="../js/screenshot.js" type="text/javascript"></script>
 	<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
 	<script src="https://code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
-  <link href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet" />
 	<script>
 			$(function() {
 		    	$("#videoChatArea").draggable();
@@ -101,12 +101,12 @@
 						</ul>
             <ul class="profile">
                 <li>
-                    <a href="/profile">
-                        <i class="fa fa-user fa-2x"></i>
-                        <span class="nav-text">
-                           <%= user.username%>
-                        </span>
-                    </a>
+                	<button  id="profilelink">
+	                		<i class="fa fa-cog fa-2x"></i>
+	                        <span class="nav-text">
+	                           <%= user.username%>
+	                        </span>
+                	</button>
 
                 </li>
             </ul>
@@ -114,27 +114,31 @@
 						&nbsp;&nbsp;Friends
 						</ul>
 
-						<% for(var i=0; i < user.friends.length; i++) { %>
+						<% for(var i=0; i < friendlist.length; i++) { %>
 							<li>
+								<button  id="friendlink">
 									<a href="/loadchat/<%= user.friends[i].id %>">
-											<i class="fa fa-user fa-2x"></i>
-											<span class="nav-text">
-												 <%= user.friends[i].username %>
+  										<i class="fa fa-circle <%= friendlist[i].online %>onlinestatus"></i>
+											<img src="<%= friendlist[i].avatar %>" class="friendlistavatar"/>
+											<span class="nav-text <%= friendlist[i].online %>online">
+												 <%= friendlist[i].username %>
 											</span>
 									</a>
-
+								</button>
 							</li>
 						<% } %>
 
 
             <ul class="logout">
                 <li>
-                   <a href="#">
-                         <i class="fa fa-power-off fa-2x"></i>
-                        <span class="nav-text">
-                            Logout
-                        </span>
-                    </a>
+									 <button  id="friendlink">
+	                   <a href="/logout">
+	                         <i class="fa fa-power-off fa-2x"></i>
+	                        <span class="nav-text">
+	                            Logout
+	                        </span>
+	                    </a>
+										</button>
                 </li>
             </ul>
         </nav>
@@ -398,10 +402,53 @@
 			<canvas id="fireworkcanvas">
 			</canvas>
 		</div>
+
+		<div class="profileSection">
+		  <br/>
+			<h1>Profile</h1>
+			<br/>
+			<form action="/profile" method="post">
+				<input type="text" name="email" class="profileField" placeholder="E-mail" value="<%=user.email%>" required="">
+				<input type="text" name="username" class="profileField" placeholder="Username" value="<%=user.username%>" required="">
+				<input type="password" name="password" class="profileField" placeholder="Password" value="<%=user.password%>" required="">
+
+				<input type="password" name="newpassword" class="profileField" placeholder="New Password" required="">
+				<input type="password" name="newpasswordConf" class="profileField" placeholder="Confirm New Password" required="">
+				<div class="tp">
+					<input type="submit" class="yourEnter" value="Save">
+				</div>
+			</form>
+			<br/>
+			<br/>
+			<br/>
+			<h3>Friends</h3>
+			<br/>
+			<table class="friendTable">
+				<% for(var i=0; i < user.friends.length; i++) { %>
+				   <tr>
+				     <td><%= user.friends[i].username %></td>
+				   </tr>
+				<% } %>
+			</table>
+			<br/><br/>
+			<h3>Add Friend</h3>
+			<br/>
+			<form action="/friend" method="post">
+				<input type="text" name="friendEmail" class="profileField" placeholder="friend's E-mail" required="">
+				<div class="tp">
+					<input type="submit" class="yourEnter" value="Add">
+				</div>
+			</form>
+			<br/>
+			<br/>
+			<br/>
+			<button  id="profilecloselink">&#8249;</button>
+
+		</div>
+
+
 		<audio id="audio" src="../audio/message.mp3" autostart="false" ></audio>
 		<audio id="videoCallaudio" src="../audio/videocall.mp3" autostart="false" ></audio>
-	</section>
-
 
 	<footer>
 		<form id="chatform">
@@ -452,7 +499,19 @@
 			window.emojiPicker.discover();
 		});
 
-		
+		$('#profilelink').click(function(){
+			$('.chatscreen').fadeOut(1200);
+			$('footer').fadeOut(1200);
+			$('.main-menu').css('bottom', '0px');
+			$('.profileSection').fadeIn(1200);
+		});
+
+		$('#profilecloselink').click(function(){
+
+			$('.profileSection').fadeOut(1200);
+		});
+
+
 		$('#btnVideoChat').click(function(){
 			//$('.videoChatInviteWait').fadeIn(1200);
 			socket.emit("videoChat", {senderId: socket.io.engine.id});
@@ -481,7 +540,6 @@
 		};
 
 		function cancelCall(){
-			console.log("cancel call");
 			socket.emit("videoChatCancelled", {senderId: socket.io.engine.id});
 		}
 
@@ -501,7 +559,6 @@
 		};
 
 		function cancelAudioCall(){
-			console.log("cancel call");
 			socket.emit("audioChatCancelled", {senderId: socket.io.engine.id});
 		}
 
@@ -558,68 +615,69 @@
      	});
 
 
-			$(() => {
-    var $sendBtn = $('.send-button'),
-            $iWrapper = $('.icon-wrapper'),
-            $i1 = $('.icon-1'),
-            $i2 = $('.icon-2');
+		$(() => {
+		    var $sendBtn = $('.send-button'),
+		            $iWrapper = $('.icon-wrapper'),
+		            $i1 = $('.icon-1'),
+		            $i2 = $('.icon-2');
 
-    function animationEvent() {
-        var t,
-                el = document.createElement('fakeelement');
+		    function animationEvent() {
+		        var t,
+		                el = document.createElement('fakeelement');
 
-        var animations = {
-            animation: 'animationend',
-            OAnimation: 'oAnimationEnd',
-            MozAnimation: 'animationend',
-            WebkitAnimation: 'webkitAnimationEnd'
-        };
+		        var animations = {
+		            animation: 'animationend',
+		            OAnimation: 'oAnimationEnd',
+		            MozAnimation: 'animationend',
+		            WebkitAnimation: 'webkitAnimationEnd'
+		        };
 
-        for (t in animations) {
-            if (el.style[t] !== undefined) {
-                return animations[t];
-            }
-        }
-    }
+		        for (t in animations) {
+		            if (el.style[t] !== undefined) {
+		                return animations[t];
+		            }
+		        }
+		    }
 
-    $sendBtn.on('click', e => {
-        $iWrapper.addClass('icon-wrapper-animation');
-        $sendBtn.addClass('clicked');
-        $i1.delay(900);
-        $i1.fadeTo(300, 0);
-        $i2.delay(900);
-        $i2.fadeTo(300, 1);
-    });
+		    $sendBtn.on('click', e => {
+		        $iWrapper.addClass('icon-wrapper-animation');
+		        $sendBtn.addClass('clicked');
+		        $i1.delay(900);
+		        $i1.fadeTo(300, 0);
+		        $i2.delay(900);
+		        $i2.fadeTo(300, 1);
+		    });
 
-    $sendBtn.on(animationEvent(), e => {
-        if (e.originalEvent.animationName == 'input-shadow') {
-            $sendBtn.removeClass('clicked');
-        }
-    });
+		    $sendBtn.on(animationEvent(), e => {
+		        if (e.originalEvent.animationName == 'input-shadow') {
+		            $sendBtn.removeClass('clicked');
+		        }
+		    });
 
-    $iWrapper.on(animationEvent(), e => {
-        if (e.originalEvent.animationName == 'icon-animation') {
-            $iWrapper.removeClass('icon-wrapper-animation');
-            setTimeout(reset, 1200);
-        }
-    });
+		    $iWrapper.on(animationEvent(), e => {
+		        if (e.originalEvent.animationName == 'icon-animation') {
+		            $iWrapper.removeClass('icon-wrapper-animation');
+		            setTimeout(reset, 1200);
+		        }
+		    });
 
-    function reset() {
-        $i1.fadeTo(250, 1);
-        $i2.fadeTo(250, 0);
-        $iWrapper.css('color', 'white');
-    }
+		    function reset() {
+		        $i1.fadeTo(250, 1);
+		        $i2.fadeTo(250, 0);
+		        $iWrapper.css('color', 'white');
+		    }
 
 
-    $('#BtnVolume').on('click', e => {
-    	if ($('#volume-slider').css('display') == 'none')
-	    	$('#volume-slider').css('display', 'flex');
-	    else
-	    	$('#volume-slider').css('display', 'none');
-    });
-}); // end of document ready
+		    $('#BtnVolume').on('click', e => {
+		    	if ($('#volume-slider').css('display') == 'none')
+			    	$('#volume-slider').css('display', 'flex');
+			    else
+			    	$('#volume-slider').css('display', 'none');
+		    });
+		}); // end of document ready
 
-$('.send-button').click(function() {$('#chatform').submit()});
+		$('.send-button').click(function() {$('#chatform').submit()});
+		
 	</script>
 
 
@@ -633,6 +691,10 @@ $('.send-button').click(function() {$('#chatform').submit()});
 		var chatObj = <%- JSON.stringify(chat) %>
 
 		var messagesObj = <%- JSON.stringify(messages) %>
+
+		var friendlistObj = <%- JSON.stringify(friendlist) %>
+
+
   </script>
 	<script src="../js/chat.js"></script>
 	<script src="../js/voiceinput.js"></script>

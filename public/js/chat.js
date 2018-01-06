@@ -94,8 +94,6 @@ $(function(){
 
 			if (socket.io.engine.id != data.senderId)
 			{
-
-					console.log(2);
 				showMessage("AudioChatReqest", data);
 				var volume = document.getElementById("volume-input");
 
@@ -171,7 +169,6 @@ $(function(){
 
 
 		socket.on('renderSnap', function(data){
-			console.log("start render image");
 			if (socket.io.engine.id === data.senderId)
 			{
 				renderPhotobuffertoArea(data.buf, true, data.user, data.img);
@@ -200,12 +197,9 @@ $(function(){
 			if(data.boolean && data.id == id) {
 
 				chats.empty();
-				console.log(messagesObj);
 				if(messagesObj != null)
 				{
 					for (var i in messagesObj) {
-					  console.log('get history:'+messagesObj[i]);
-
 						createChatMessage(messagesObj[i].isImage,messagesObj[i].message,messagesObj[i].fromUsername,messagesObj[i].fromUserImg,moment(new Date(messagesObj[i].sentDatetime)));
 					}
 				}
@@ -270,13 +264,9 @@ $(function(){
 		});
 
 		chatForm.on('submit', function(e){
-			console.log('what??');
 			e.preventDefault();
-			console.log('text'+textarea.html());
 			if (textarea.html().length > 0)
 			{
-				// Create a new chat message and display it directly
-				console.log(textarea.html());
 				//showMessage("chatStarted");
 				if(textarea.html().trim().length) {
 
@@ -323,7 +313,6 @@ $(function(){
 
 
 		function renderPhotobuffertoArea(data,ismine, user,imgg) {
-				console.log("start rendering.......");
 		    var now = moment();
 				var who = '';
 
@@ -345,7 +334,6 @@ $(function(){
 							'<div id="divpostedMessage"></div>' +
 						'</li>');
 
-				console.log(data.count);
 		    var canvas = document.createElement('canvas');
 		    canvas.width = 1000;
 		    canvas.height = 1000;
@@ -413,7 +401,6 @@ $(function(){
 				emoji.img_set = 'apple';
 				emoji.replace_mode = emoji.replace_mode;;
 				emoji.text_mode = false;
-				console.log("message is"+msg);
 				var out = emoji.replace_colons(msg);
 
 				// use the 'text' method to escape malicious user input
@@ -485,6 +472,7 @@ $(function(){
 					videoChatScreen.css('display','none');
 				}
 				footer.css('display', 'block');
+				$('.main-menu').css('bottom', '150px');
 				chatScreen.css('display','block');
 			}
 
@@ -538,15 +526,12 @@ $(function(){
 				videoChatInviteCancelled.fadeIn(1200);
 			}
 			else if (status === "AudioChatReqest") {
-				console.log(3);
 				section.children().css('display', 'none');
 				chatScreen.css('display','block');
 				topImage.attr("src",data.avatar);
 				audioChatInvite.fadeIn(1200);
-				console.log(4);
 			}
 			else if (status === "AudioChatReqestWaiting") {
-				console.log(3);
 				section.children().css('display', 'none');
 				chatScreen.css('display','block');
 				audioChatInviteWait.fadeIn(1200);

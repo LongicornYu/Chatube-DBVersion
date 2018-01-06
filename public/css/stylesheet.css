@@ -120,6 +120,116 @@ html {
 	color: white;
 }
 
+.homelink {
+  position: fixed;
+  cursor: pointer;
+  --top: 50vh;
+  left: 50%;
+  color: white;
+  transform: translate3d(-50%, -50%, 0);
+  padding: 0.7em calc(0.7em * 1.2);
+  display: block;
+  border: 3px solid transparent;
+  position: relative;
+  font-size: 1.25em;
+  width:100px;
+  letter-spacing: 0.07em;
+  text-decoration:none;
+}
+.homelink .text {
+  font-family: proxima-nova;
+  transform: translate3d(0, 0.7em, 0);
+  display: block;
+  color:black;
+  transition: transform 0.4s cubic-bezier(0.2, 0, 0, 1) 0.4s;
+}
+.homelink:after {
+  position: absolute;
+  content: '';
+  bottom: -3px;
+  left: calc(0.7em * 1.2);
+  right: calc(0.7em * 1.2);
+  height: 3px;
+  background: black;
+  z-index: -1;
+  transition: transform 0.8s cubic-bezier(1, 0, 0.37, 1) 0.2s, right 0.2s cubic-bezier(0.04, 0.48, 0, 1) 0.6s, left 0.4s cubic-bezier(0.04, 0.48, 0, 1) 0.6s;
+  transform-origin: left;
+}
+
+.line {
+  position: absolute;
+  background: black;
+}
+.line.-right, .line.-left {
+  width: 3px;
+  bottom: -3px;
+  top: -3px;
+  transform: scale3d(1, 0, 1);
+}
+.line.-top, .line.-bottom {
+  height: 3px;
+  left: -3px;
+  right: -3px;
+  transform: scale3d(0, 1, 1);
+}
+.line.-right {
+  right: -3px;
+  transition: transform 0.1s cubic-bezier(1, 0, 0.65, 1.01) 0.23s;
+  transform-origin: top;
+}
+.line.-top {
+  top: -3px;
+  transition: transform 0.08s linear 0.43s;
+  transform-origin: left;
+}
+.line.-left {
+  left: -3px;
+  transition: transform 0.08s linear 0.51s;
+  transform-origin: bottom;
+}
+.line.-bottom {
+  bottom: -3px;
+  transition: transform 0.3s cubic-bezier(1, 0, 0.65, 1.01);
+  transform-origin: right;
+}
+
+a:hover .text,
+a:active .text {
+  transform: translate3d(0, 0, 0);
+  transition: transform 0.6s cubic-bezier(0.2, 0, 0, 1) 0.4s;
+}
+a:hover:after,
+a:active:after {
+  transform: scale3d(0, 1, 1);
+  right: -3px;
+  left: -3px;
+  transform-origin: right;
+  transition: transform 0.2s cubic-bezier(1, 0, 0.65, 1.01) 0.17s, right 0.2s cubic-bezier(1, 0, 0.65, 1.01), left 0s 0.3s;
+}
+a:hover .line,
+a:active .line {
+  transform: scale3d(1, 1, 1);
+}
+a:hover .line.-right,
+a:active .line.-right {
+  transition: transform 0.1s cubic-bezier(1, 0, 0.65, 1.01) 0.2s;
+  transform-origin: bottom;
+}
+a:hover .line.-top,
+a:active .line.-top {
+  transition: transform 0.08s linear 0.4s;
+  transform-origin: right;
+}
+a:hover .line.-left,
+a:active .line.-left {
+  transition: transform 0.08s linear 0.48s;
+  transform-origin: top;
+}
+a:hover .line.-bottom,
+a:active .line.-bottom {
+  transition: transform 0.5s cubic-bezier(0, 0.53, 0.29, 1) 0.56s;
+  transform-origin: left;
+}
 
 /* ------ Invite ------ */
 
@@ -233,14 +343,14 @@ html {
 /* ------ Login Page Avatar Selector ------*/
 
 .avatarSelectorImg{
-	height:50px;
-	width:50px;
+	height:80px;
+	width:80px;
 	margin:10px;
 }
 
 .youravatarSelectorImg{
-	height:50px;
-	width:50px;
+	height:60px;
+	width:60px;
 	margin:10px;
 }
 
@@ -384,12 +494,6 @@ html {
 	margin-left:35%;
 	margin-bottom:20px;
 
-
-}
-
-#loginLogo{
-	padding-top:50px;
-	padding-bottom:50px;
 
 }
 
@@ -1121,14 +1225,14 @@ footer {
 	right: 0;
 	width:100%;
 	padding-top: 30px;
-	background-color: #e0e0e0;
+	background-color: white;
 	height: 120px;
 	z-index: 150;
 }
 #chatform {
 	width:100%;
 	margin: 0 auto;
-	background-color: #e0e0e0;
+	background-color: white;
 }
 
 #text-input {
@@ -1138,7 +1242,7 @@ footer {
 	float:left;
 	margin:0px 30px 0px 30px;
 	background-color: #f9f9f9;
-	border: 1px solid #e0e0e0;
+	border: 1px solid #cccccc;
 	border-radius: 2px;
 	padding-left: 20px;
 	padding-top: 20px;
@@ -1365,7 +1469,7 @@ body .send-button .icon-wrapper .icon-2 {
 .chatButton:disabled,
 .chatButton[disabled]{
   border: 1px solid #999999;
-  background-color: #e0e0e0;
+  background-color: #cccccc;
   color: red;
 }
 
@@ -1436,7 +1540,7 @@ body .send-button .icon-wrapper .icon-2 {
 }
 
 .actionMenu {
-  background-color: #e0e0e0;
+  background-color: white;
   border-radius: 1rem;
   height:5.2em;
   position: absolute;
@@ -1513,7 +1617,9 @@ body .send-button .icon-wrapper .icon-2 {
 	display: none;
 }
 
-
+.profileSection{
+	display: none;
+}
 
 .audioChatInvite {
 	display: none;
@@ -1913,123 +2019,138 @@ canvas {
 
 /*--------------Side bar---------------*/
 .fa-2x {
-font-size: 2em;
+	font-size: 1.4em!important;
 }
 .fa {
-position: relative;
-display: table-cell!important;
-width: 60px;
-height: 36px;
-text-align: center;
-vertical-align: middle;
-font-size:20px!important;
+	position: relative;
+	display: table-cell!important;
+	width: 40px;
+	height: 36px;
+	text-align: center;
+	vertical-align: middle;
+	font-size:20px;
 }
 
 
 .main-menu:hover,nav.main-menu.expanded {
-width:250px;
-overflow:scroll;
+	width:250px;
+	overflow:scroll;
 }
 
 .main-menu {
-background: linear-gradient(to bottom, #3c4446, #e0e0e0);
-border-right:1px solid #3c4446;
-position:fixed;
-top:70px;
-bottom:150px;
-left:0;
-width:150px;
-overflow:auto;
-z-index:2;
--webkit-transition:width .05s linear;
-transition:width .05s linear;
--webkit-transform:translateZ(0) scale(1,1);
+	background: linear-gradient(to bottom, #3c4446, white);
+	border-right:1px solid #3c4446;
+	position:fixed;
+	top:70px;
+	bottom:0px;
+	left:0;
+	width:150px;
+	overflow:auto;
+	z-index:2;
+	-webkit-transition:width .05s linear;
+	transition:width .05s linear;
+	-webkit-transform:translateZ(0) scale(1,1);
 }
 
 .main-menu>ul {
-margin:7px 0;
+	margin:7px 0;
 }
 
 .main-menu li {
-position:relative;
-display:block;
-width:250px;
+	position:relative;
+	display:block;
+	width:250px;
 }
 
-.main-menu li>a {
-position:relative;
-display:table;
-border-collapse:collapse;
-border-spacing:0;
-color:#999;
- font-family: arial;
-font-size: 14px;
-text-decoration:none;
--webkit-transform:translateZ(0) scale(1,1);
--webkit-transition:all .1s linear;
-transition:all .1s linear;
+.falseonline {
+	color:#999999;
+	text-decoration:none !important;
+}
+
+.trueonline {
+	color:green;
+	text-decoration:none !important;
+}
+
+
+.main-menu li button>a {
+	position:relative;
+	display:table;
+	border-collapse:collapse;
+	border-spacing:0;
+
+	font-family: arial;
+	font-size: 14px;
+	text-decoration:none !important;
+	-webkit-transform:translateZ(0) scale(1,1);
+	-webkit-transition:all .1s linear;
+	transition:all .1s linear;
 
 }
 
 .main-menu .nav-icon {
-position:relative;
-display:table-cell;
-width:60px;
-height:36px;
-text-align:center;
-vertical-align:middle;
-font-size:18px;
+	position:relative;
+	display:table-cell;
+	width:60px;
+	height:36px;
+	text-align:center;
+	vertical-align:middle;
+	font-size:18px;
 }
 
 .main-menu .nav-text {
-position:relative;
-display:table-cell;
-vertical-align:middle;
-width:190px;
-  font-family: 'Titillium Web', sans-serif;
+	position:relative;
+	display:table-cell;
+	vertical-align:middle;
+	width:190px;
+	padding:0px;
+	font-size:16px;
+	text-align:left;
+	font-family: 'Titillium Web', sans-serif;
 }
 
 .main-menu>ul.logout {
-position:absolute;
-left:0;
-bottom:0;
+	position:absolute;
+	left:0;
+	bottom:0;
 }
 
 .no-touch .scrollable.hover {
-overflow-y:hidden;
+	overflow-y:hidden;
 }
 
 .no-touch .scrollable.hover:hover {
-overflow-y:auto;
-overflow:visible;
+	overflow-y:auto;
+	overflow:visible;
 }
 
 a:hover,a:focus {
-text-decoration:none;
+	text-decoration:none;
 }
 
 nav {
--webkit-user-select:none;
--moz-user-select:none;
--ms-user-select:none;
--o-user-select:none;
-user-select:none;
+	-webkit-user-select:none;
+	-moz-user-select:none;
+	-ms-user-select:none;
+	-o-user-select:none;
+	user-select:none;
 }
 
 nav ul,nav li {
-outline:0;
-margin:0;
-padding:0;
+	outline:0;
+	margin:0;
+	padding:0;
 }
+
 .main-menu li:hover>a,nav.main-menu li.active>a,.dropdown-menu>li>a:hover,.dropdown-menu>li>a:focus,.dropdown-menu>.active>a,.dropdown-menu>.active>a:hover,.dropdown-menu>.active>a:focus,.no-touch .dashboard-page nav.dashboard-menu ul li:hover a,.dashboard-page nav.dashboard-menu ul li.active a {
-color:#fff;
-background-color:#5fa2db;
+	color:#fff;
+	background-color:#5fa2db;
 }
 .area {
-float: left;
-background: #e2e2e2;
-width: 100%;
-height: 100%;
+	float: left;
+	background: #e2e2e2;
+	width: 100%;
+	height: 100%;
 }
 @font-face {
   font-family: 'Titillium Web';
@@ -2037,6 +2158,19 @@ height: 100%;
   font-weight: 300;
   src: local('Titillium WebLight'), local('TitilliumWeb-Light'), url(https://themes.googleusercontent.com/static/fonts/titilliumweb/v2/anMUvcNT0H1YN4FII8wpr24bNCNEoFTpS2BTjF6FB5E.woff) format('woff');
 }
+
+
+.friendlistavatar{
+	height:30px;
+	width:30px;
+	position: relative;
+	display: table-cell!important;
+	text-align: center;
+	vertical-align: middle;
+	margin:5px 5px 5px 0px;
+
+}
+
 
 #termSection
 {
@@ -2047,26 +2181,6 @@ height: 100%;
 		margin-top:10px;
 }
 
-hr.profilehr {
-    overflow: visible; /* For IE */
-    height: 30px;
-    border-style: solid;
-    border-color: grey;
-    border-width: 1px 0 0 0;
-    border-radius: 20px;
-
-}
-hr.profilehr:before { /* Not really supposed to work, but does */
-    display: block;
-    content: "";
-    height: 30px;
-    margin-top: -31px;
-    border-style: solid;
-    border-color: grey;
-    border-width: 0 0 1px 0;
-    border-radius: 20px;
-}
-
 .profileSection{
 	text-align:center;
 	margin-top:20px;
@@ -2075,4 +2189,156 @@ hr.profilehr:before { /* Not really supposed to work, but does */
 	width: 400px;
 	height: auto;
 	overflow:auto;
+}
+
+.trueonlinestatus{
+	color:green;
+}
+
+
+.falseonlinestatus{
+	color:grey;
+	font-size:12px !important;
+}
+
+
+#profilecloselink {
+	  width:40px;
+    height:40px;
+    border: 0.5px solid #f5f5f5;
+    border-radius: 50%;
+    color:#f5f5f5;
+    text-align:center;
+    text-decoration:none;
+		opacity: 0.9;
+		font-size:30px;
+    box-shadow: 0 0 3px gray;
+    background: transparent;
+		padding:0px 0px 5px 0px;
+		margin-bottom:20px;
+}
+
+/*---------------Profile ----------------------------*/
+.friendTable {
+    border-collapse: collapse;
+    width: 100%;
+		border: 1px solid grey;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.friendTable td {
+    padding: 8px;
+		text-align: center;
+}
+
+.friendTable tr:nth-child(even){background-color: #f2f2f2;}
+.friendTable tr:nth-child(odd){background-color: white;}
+
+.friendTable tr:hover {background-color: #ddd;}
+.friendTable th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: center;
+    background-color: grey;
+    color: white;
+}
+
+#profilelink{
+	cursor: pointer;
+	width:250px;
+	font-size:12px !important;
+}
+
+/*--------------Login & Register Page---------------*/
+.registerSection {
+	text-align:center;
+	margin-top:20px;
+	background: rgba(255,255,255,0.5);
+	margin: 0 auto;
+	width: 900px;
+	height: 500px;
+}
+
+.loginRegisterFormLabel {
+  display: block;
+  letter-spacing: 3px;
+  padding-top: 30px;
+  text-align: center;
+}
+.loginRegisterFormLabel .label-text {
+  color: white;
+  cursor: text;
+  font-size: 15px;
+  line-height: 20px;
+  text-transform: uppercase;
+  -moz-transform: translateY(-34px);
+  -ms-transform: translateY(-34px);
+  -webkit-transform: translateY(-34px);
+  transform: translateY(-34px);
+  transition: all 0.3s;
+}
+.loginRegisterFormLabel input {
+  background-color: transparent;
+  border: 0;
+  border-bottom: 2px solid #4A4A4A;
+  color: white;
+  font-size: 25px;
+  letter-spacing: -1px;
+  outline: 0;
+  padding: 5px 20px;
+  text-align: center;
+  transition: all 0.3s;
+  width: 150px;
+}
+.loginRegisterFormLabel input:focus {
+  max-width: 100%;
+  width: 280px;
+}
+.loginRegisterFormLabel input:focus + .label-text {
+  color: #F0F0F0;
+  font-size: 13px;
+  -moz-transform: translateY(-74px);
+  -ms-transform: translateY(-74px);
+  -webkit-transform: translateY(-74px);
+  transform: translateY(-74px);
+}
+.loginRegisterFormLabel input:valid + .label-text {
+  font-size: 13px;
+  -moz-transform: translateY(-74px);
+  -ms-transform: translateY(-74px);
+  -webkit-transform: translateY(-74px);
+  transform: translateY(-74px);
+}
+
+.loginRegisterButton {
+  background-color: #333333;
+  border: 2px solid white;
+  border-radius: 27px;
+  color: white;
+  cursor: pointer;
+  font-size: 15px;
+  margin-top: 15px;
+  padding: 15px 30px;
+  text-transform: uppercase;
+  transition: all 200ms;
+}
+.loginRegisterButton:hover, .loginRegisterButton:focus {
+  background-color: white;
+  color: #333333;
+  outline: 0;
+}
+
+.login-form {
+	padding-top:30%;
+}
+
+.register-form {
+	float:left;
+	margin-top:20px;
+	margin-left:20px;
+}
+
+#friendlink{
+	width:250px;
 }
