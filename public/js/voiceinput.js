@@ -2,7 +2,7 @@
 
 const socket = io();
 
-const btnMicrophone = document.getElementById("btnMicrophone");
+const btnMic = document.getElementById("btnMicrophone");
 const iMicrophone = document.getElementById("iMicrophone");
 
 
@@ -15,7 +15,7 @@ recognition.maxAlternatives = 1;
 
 document.querySelector('button').addEventListener('click', () => {
   recognition.start();
-  btnMicrophone.disabled = true;
+  btnMic.disabled = true;
   //outputYou.disabled = true;
   iMicrophone.className += " Blink";
 
@@ -39,7 +39,7 @@ recognition.addEventListener('result', (e) => {
 
 recognition.addEventListener('speechend', () => {
   recognition.stop();
-  btnMicrophone.disabled = false;
+  btnMic.disabled = false;
   //outputYou.disabled = false;
   iMicrophone.className = "fa fa-microphone";
 
@@ -47,7 +47,7 @@ recognition.addEventListener('speechend', () => {
 
 recognition.addEventListener('error', (e) => {
   console.log('Error: ' + e.error);
-  btnMicrophone.disabled = false;
+  btnMic.disabled = false;
   //outputYou.disabled = false;
   iMicrophone.className = "fa fa-microphone";
 });

@@ -2184,7 +2184,7 @@ nav ul,nav li {
 .profileSection{
 	text-align:center;
 	margin-top:20px;
-	background: rgba(255,255,255,0.5);
+	background: rgba(255,255,255,0.6);
 	margin: 0 auto;
 	width: 400px;
 	height: auto;
@@ -2216,12 +2216,15 @@ nav ul,nav li {
     background: transparent;
 		padding:0px 0px 5px 0px;
 		margin-bottom:20px;
+		cursor:pointer;
 }
+
+#profilecloselink:hover {background-color: #ddd;}
 
 /*---------------Profile ----------------------------*/
 .friendTable {
     border-collapse: collapse;
-    width: 100%;
+    width: 90%;
 		border: 1px solid grey;
     margin-left: auto;
     margin-right: auto;
@@ -2232,8 +2235,8 @@ nav ul,nav li {
 		text-align: center;
 }
 
-.friendTable tr:nth-child(even){background-color: #f2f2f2;}
-.friendTable tr:nth-child(odd){background-color: white;}
+.friendTable tr:nth-child(even){background-color: rgba(242, 242, 242, 0.6);}
+.friendTable tr:nth-child(odd){background-color: rgba(255, 255, 255, 0.6) white;}
 
 .friendTable tr:hover {background-color: #ddd;}
 .friendTable th {

@@ -12,7 +12,8 @@ var bodyParser = require("body-parser")
 var User = require('../models/user');
 var Chat = require('../models/chat');
 var Message = require('../models/message');
-
+var connectedClients=[];
+var connectedSockets=[];
 // Export a function, so that we can pass
 // the app and io instances from the app.js file:
 
@@ -95,8 +96,8 @@ module.exports = function(app,io){
 	        return next(err);
 	      } else {
 	        req.session.userId = user._id;
-			user.online=true;
-			user.save();
+					user.online=true;
+					user.save();
 	        return res.redirect('/chat');
 	        //return res.render('chat', {user:user, friend:null, chat:null, messages:null});
 	      }
@@ -167,7 +168,6 @@ module.exports = function(app,io){
 		User.findById(req.session.userId).exec(function (error, user) {
 
           User.find({'_id': {'$in' : user.friends.map(a => a.id)}}).exec(function(err, items) {
-          	 friendlist = items;
 
 			User.findById(req.params.id).exec(function (error, friend)
 			{
@@ -304,23 +304,61 @@ module.exports = function(app,io){
 				// Add the client to the room
 				socket.join(data.id);
 
-
 				chat.in(data.id).emit('startChat', {
 					boolean: true,
 					id: data.id
 				});
-
 			}
 			else {
 				socket.emit('tooMany', {boolean: true});
 			}
 		});
 
+		socket.on('friendStatusChange', function(data) {
+			connectedClients.push(data.userId);
+			connectedSockets.push(socket.id);
+
+			for (var i = 0; i < connectedClients.length; i++) {
+				var socketId = connectedSockets[i];
+				User.findById(connectedClients[i])
+							.exec(function (error, user) {
+								if (!error)
+								{
+									if (user != null)
+									{
+											User.find({'_id': {'$in' : user.friends.map(a => a.id)}}).exec(function(err, items) {
+												console.log(socketId);
+												socket.broadcast.to(socketId).emit('refreshFriendList', items);
+											});
+									}
+								}
+							});
+			}
+		});
+
 		// Somebody left the chat
 		socket.on('disconnect', function() {
-
+			const index = connectedSockets.indexOf(socket.id);
+			User.findById(connectedClients[index])
+				    .exec(function (error, user) {
+				      if (error) {
+				        console.log(error);
+				      } else {
+				        if (user === null) {
+				          var err = new Error('Not authorized! Go back!');
+				          err.status = 400;
+				          console.log(err);
+				        } else {
+				          user.online= false;
+				          user.save();
+				        }
+				      }
+				    });
 			// Notify the other person in the chat room
 			// that his partner has left
+			connectedSockets.splice(index, 1);
+			connectedClients.splice(index, 1);
+
 
 			socket.broadcast.to(this.room).emit('leave', {
 				boolean: true,

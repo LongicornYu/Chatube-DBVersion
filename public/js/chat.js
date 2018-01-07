@@ -2,12 +2,38 @@
 
 $(function(){
 
+	var socket = io();
+
+	socket.on('connect', function(){
+		console.log(userObj);
+		socket.emit('friendStatusChange', {userId: userObj._id});
+	});
+
+	socket.on('refreshFriendList', function(data){
+		console.log('refreshFriendList'+JSON.stringify(data));
+		var friends = JSON.parse(data);
+		var renderedHTML='';
+		 for(var i=0; i < friends.length; i++) {
+			renderedHTML+=$('<li>'
+				+'<button  id="friendlink">'
+					+'<a href="/loadchat/'+ friends[i].username+ '">'
+							+'<i class="fa fa-circle '+friends[i].online+'onlinestatus"></i>'
+							+'<img src="'+friends[i].avatar +'" class="friendlistavatar"/>'
+							+'<span class="nav-text '+friends[i].online +'online">'
+								+ friends[i].username
+							+'</span>'
+					+'</a>'
+				+'</button>'
+			+'</li>');
+		}
+
+
+		$(".friendlist").html(li);
+	});
+
+
 	if(chatObj!=null)
 	{
-
-		// connect to the socket
-		var socket = io();
-
 		// variables which hold the data for each person
 		var name = "",
 			email = "",
@@ -61,11 +87,9 @@ $(function(){
 			topImage = $("#topImage"),
 			noMessagesImage = $("#noMessagesImage");
 
-		// on connection to server get the id of person's room
-		socket.on('connect', function(){
 
-			socket.emit('load', id);
-		});
+		socket.emit('load', id);
+
 
 		// save the gravatar url
 		socket.on('img', function(data){
