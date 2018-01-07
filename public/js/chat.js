@@ -10,25 +10,26 @@ $(function(){
 	});
 
 	socket.on('refreshFriendList', function(data){
-		console.log('refreshFriendList'+JSON.stringify(data));
-		var friends = JSON.parse(data);
-		var renderedHTML='';
-		 for(var i=0; i < friends.length; i++) {
-			renderedHTML+=$('<li>'
+		var renderedHTML;
+		console.log('data'+data.length);
+		 for(var i=0; i < data.length; i++) {
+			/*renderedHTML='<li>'
 				+'<button  id="friendlink">'
-					+'<a href="/loadchat/'+ friends[i].username+ '">'
-							+'<i class="fa fa-circle '+friends[i].online+'onlinestatus"></i>'
-							+'<img src="'+friends[i].avatar +'" class="friendlistavatar"/>'
-							+'<span class="nav-text '+friends[i].online +'online">'
-								+ friends[i].username
+					+'<a href="/loadchat/'+ data[i].username.toString()+ '">'
+							+'<i class="fa fa-circle '+data[i].online.toString()+'onlinestatus"></i>'
+							+'<img src='+data[i].avatar.toString() +' class="friendlistavatar"/>'
+							+'<span class="nav-text '+data[i].online.toString() +'online">'
+								+ data[i].username.toString()
 							+'</span>'
 					+'</a>'
 				+'</button>'
-			+'</li>');
+			+'</li>';*/
+			renderedHTML += "test" + i + ";";
 		}
 
+		console.log('renderedhtml'+renderHTML);
+		//$(".friendlist").html(li);
 
-		$(".friendlist").html(li);
 	});
 
 

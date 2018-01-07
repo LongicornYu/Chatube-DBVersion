@@ -320,19 +320,20 @@ module.exports = function(app,io){
 
 			for (var i = 0; i < connectedClients.length; i++) {
 				var socketId = connectedSockets[i];
-				User.findById(connectedClients[i])
-							.exec(function (error, user) {
-								if (!error)
-								{
-									if (user != null)
-									{
-											User.find({'_id': {'$in' : user.friends.map(a => a.id)}}).exec(function(err, items) {
-												console.log(socketId);
-												socket.broadcast.to(socketId).emit('refreshFriendList', items);
-											});
-									}
-								}
-							});
+				(function (socketId) {
+					User.findById(connectedClients[i], function(err, user) {
+						if (!err)
+						{
+							if (user != null)
+							{
+									User.find({'_id': {'$in' : user.friends.map(a => a.id)}},function(err, items) {
+											console.log('socketid'+socketId);
+											socket.broadcast.to(socketId).emit('refreshFriendList', items);
+									});
+							}
+						}
+					})
+				}(socketId));
 			}
 		});
 
