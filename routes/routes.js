@@ -339,6 +339,7 @@ module.exports = function(app,io){
 
 		// Somebody left the chat
 		socket.on('disconnect', function() {
+			console.log('disconnect');
 			const index = connectedSockets.indexOf(socket.id);
 			User.findById(connectedClients[index])
 				    .exec(function (error, user) {

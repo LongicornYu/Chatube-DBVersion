@@ -15,7 +15,7 @@ $(function(){
 		for (var i = 0; i < data.length; i++) {
 			renderedHTML+='<li>'
 				+'<button  id="friendlink">'
-					+'<a href="/loadchat/'+ data[i].username.toString()+ '">'
+					+'<a href="/loadchat/'+ data[i]._id.toString()+ '">'
 							+'<i class="fa fa-circle '+data[i].online.toString()+'onlinestatus"></i>'
 							+'<img src='+data[i].avatar.toString() +' class="friendlistavatar"/>'
 							+'<span class="nav-text '+data[i].online.toString() +'online">'
