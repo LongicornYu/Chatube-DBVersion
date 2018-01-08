@@ -10,10 +10,10 @@ $(function(){
 	});
 
 	socket.on('refreshFriendList', function(data){
-		var renderedHTML;
+		var renderedHTML='';
 		console.log('data'+data.length);
-		 for(var i=0; i < data.length; i++) {
-			/*renderedHTML='<li>'
+		for (var i = 0; i < data.length; i++) {
+			renderedHTML+='<li>'
 				+'<button  id="friendlink">'
 					+'<a href="/loadchat/'+ data[i].username.toString()+ '">'
 							+'<i class="fa fa-circle '+data[i].online.toString()+'onlinestatus"></i>'
@@ -23,13 +23,14 @@ $(function(){
 							+'</span>'
 					+'</a>'
 				+'</button>'
-			+'</li>';*/
-			renderedHTML += "test" + i + ";";
+			+'</li>';
+			alert(i);
+			alert(renderedHTML);
 		}
+		var htmlobj = $(renderedHTML);
 
-		console.log('renderedhtml'+renderHTML);
-		//$(".friendlist").html(li);
-
+		//console.log('renderedhtml'+renderHTML);
+		$("#friendlist").html(htmlobj);
 	});
 
 

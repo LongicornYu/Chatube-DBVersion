@@ -318,7 +318,7 @@ module.exports = function(app,io){
 			connectedClients.push(data.userId);
 			connectedSockets.push(socket.id);
 
-			for (var i = 0; i < connectedClients.length; i++) {
+			for (var i = 0; i < connectedClients.length-1; i++) {
 				var socketId = connectedSockets[i];
 				(function (socketId) {
 					User.findById(connectedClients[i], function(err, user) {
