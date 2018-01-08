@@ -24,8 +24,6 @@ $(function(){
 					+'</a>'
 				+'</button>'
 			+'</li>';
-			alert(i);
-			alert(renderedHTML);
 		}
 		var htmlobj = $(renderedHTML);
 

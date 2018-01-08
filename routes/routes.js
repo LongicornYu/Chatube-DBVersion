@@ -360,6 +360,24 @@ module.exports = function(app,io){
 			connectedSockets.splice(index, 1);
 			connectedClients.splice(index, 1);
 
+			for (var i = 0; i < connectedClients.length; i++) {
+				var socketId = connectedSockets[i];
+				(function (socketId) {
+					User.findById(connectedClients[i], function(err, user) {
+						if (!err)
+						{
+							if (user != null)
+							{
+									User.find({'_id': {'$in' : user.friends.map(a => a.id)}},function(err, items) {
+											console.log('socketid'+socketId);
+											socket.broadcast.to(socketId).emit('refreshFriendList', items);
+									});
+							}
+						}
+					})
+				}(socketId));
+			}
+
 
 			socket.broadcast.to(this.room).emit('leave', {
 				boolean: true,
