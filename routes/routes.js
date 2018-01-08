@@ -210,11 +210,6 @@ module.exports = function(app,io){
 	});
 });
 
-	app.get('/loadchat/:id', function(req,res){
-		// Render the chant.html view
-		res.redirect('/chat/'+req.params.id);
-	});
-
 	app.get('/chat', function(req,res,next){
 		User.findById(req.session.userId)
 	    .exec(function (error, user) {
@@ -303,6 +298,24 @@ module.exports = function(app,io){
 
 				// Add the client to the room
 				socket.join(data.id);
+				console.log('userid:'+data.userId);
+				//when switching page, the socket will be reconnected, thus need to update the login status here
+				User.findById(data.userId)
+					    .exec(function (error, user) {
+					      if (error) {
+					        console.log(error);
+					      } else {
+					        if (user === null) {
+					          var err = new Error('Not authorized! Go back!');
+					          err.status = 400;
+					          console.log(err);
+					        } else {
+					          user.online= true;
+					          user.save();
+										console.log('update the reconnect status');
+					        }
+					      }
+					    });
 
 				chat.in(data.id).emit('startChat', {
 					boolean: true,
@@ -380,12 +393,12 @@ module.exports = function(app,io){
 			}
 
 
-			socket.broadcast.to(this.room).emit('leave', {
+			/*socket.broadcast.to(this.room).emit('leave', {
 				boolean: true,
 				room: this.room,
 				user: this.username,
 				avatar: this.avatar
-			});
+			});*/
 
 			// leave the room
 			socket.leave(socket.room);

@@ -1,7 +1,7 @@
 // This file is executed in the browser, when people visit /chat/<random id>
 
 $(function(){
-
+	console.log('connect');
 	var socket = io();
 
 	socket.on('connect', function(){
@@ -15,7 +15,7 @@ $(function(){
 		for (var i = 0; i < data.length; i++) {
 			renderedHTML+='<li>'
 				+'<button  id="friendlink">'
-					+'<a href="/loadchat/'+ data[i]._id.toString()+ '">'
+					+'<a href="/chat/'+ data[i]._id.toString()+ '">'
 							+'<i class="fa fa-circle '+data[i].online.toString()+'onlinestatus"></i>'
 							+'<img src='+data[i].avatar.toString() +' class="friendlistavatar"/>'
 							+'<span class="nav-text '+data[i].online.toString() +'online">'
@@ -233,7 +233,7 @@ $(function(){
 			}
 		});
 
-		socket.on('leave',function(data){
+		/*socket.on('leave',function(data){
 
 			if(data.boolean && id==data.room){
 
@@ -241,7 +241,7 @@ $(function(){
 			}
 
 		});
-
+    */
 
 		socket.on('tooMany', function(data){
 

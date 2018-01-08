@@ -117,7 +117,7 @@
 						<% for(var i=0; i < friendlist.length; i++) { %>
 							<li>
 								<button  id="friendlink">
-									<a href="/loadchat/<%= user.friends[i].id %>">
+									<a href="/chat/<%= user.friends[i].id %>">
   										<i class="fa fa-circle <%= friendlist[i].online %>onlinestatus"></i>
 											<img src="<%= friendlist[i].avatar %>" class="friendlistavatar"/>
 											<span class="nav-text <%= friendlist[i].online %>online">
