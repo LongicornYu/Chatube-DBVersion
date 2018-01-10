@@ -128,13 +128,19 @@ module.exports = function(app,io){
 			          return next(err);
 			        } else {
 								var fnd1 = {username: friend.username , id:friend._id};
-			          user.friends.push(fnd1);
-								user.save();
+								var fnd_id_1 = user.friends.map(a => a.id);
+								if(fnd_id_1.indexOf(friend._id) === -1) {
+			          	user.friends.push(fnd1);
+									user.save();
+								}
 
 								var fnd2 = {username: user.username , id:user._id};
-								friend.friends.push(fnd2);
-								friend.save();
-				        return res.render('profile', {user:user});
+								var fnd_id_2 = friend.friends.map(a => a.id);
+								if(fnd_id_2.indexOf(user._id) === -1) {
+									friend.friends.push(fnd2);
+									friend.save();
+								}
+				        return res.render('chat', {user:user});
 			        }
 			      }
 			    });
