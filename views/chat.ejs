@@ -242,6 +242,18 @@
 
 		</div>
 
+		<div class="errorMessage" tabindex="-1">
+			<span id='close' onclick='closeErrorMessage()'><i class="fa fa-times-circle" aria-hidden="true"></i></span>
+			<img src="../img/error.png"  />
+			<h2><span id="errorMessageContent"></span></h2>
+		</div>
+
+		<div class="successMessage" tabindex="-1">
+			<span id='close' onclick='closeSuccessMessage()'><i class="fa fa-times-circle" aria-hidden="true"></i></span>
+			<img src="../img/success.png"  />
+			<h2><span id="successMessageContent"></span></h2>
+		</div>
+
 
 		<div class="videoChatInvite">
 			<img src="../img/unnamed.jpg" id="topImage" />
@@ -407,7 +419,7 @@
 		  <br/>
 			<h1>Profile</h1>
 			<br/>
-			<form action="/profile" method="post">
+			<form>
 				<input type="text" name="email" class="profileField" placeholder="E-mail" value="<%=user.email%>" required="">
 				<input type="text" name="username" class="profileField" placeholder="Username" value="<%=user.username%>" required="">
 				<input type="password" name="password" class="profileField" placeholder="Password" value="<%=user.password%>" required="">
@@ -415,7 +427,7 @@
 				<input type="password" name="newpassword" class="profileField" placeholder="New Password" required="">
 				<input type="password" name="newpasswordConf" class="profileField" placeholder="Confirm New Password" required="">
 				<div class="tp">
-					<input type="submit" class="yourEnter" value="Save">
+					<input type="submit" class="yourEnter" onclick="saveProfile(); return false;" value="Save">
 				</div>
 			</form>
 			<br/>
@@ -425,20 +437,20 @@
 			<br/>
 			<table class="friendTable">
 				<% for(var i=0; i < user.friends.length; i++) { %>
-				   <tr>
+				   <tr id="tr_<%= user.friends[i].id %>">
 				     <td><%= user.friends[i].username %></td>
+						 <td class="deleteColumn"><i class="fa fa-trash" id="deleteFriend" onclick="deletefriend('<%=user.friends[i].id%>'); return false;" aria-hidden="true"></i></td>
 				   </tr>
 				<% } %>
 			</table>
 			<br/><br/>
 			<h3>Add Friend</h3>
 			<br/>
-			<form action="/friend" method="post">
-				<input type="text" name="friendEmail" class="profileField" placeholder="friend's E-mail" required="">
+
+				<input type="text" name="friendEmail" id="friendEmail" class="profileField" placeholder="friend's E-mail" required="">
 				<div class="tp">
-					<input type="submit" class="yourEnter" value="Add">
+					<button class="yourEnter" onclick="addFriend(); return false;" >Add</button>
 				</div>
-			</form>
 			<br/>
 			<br/>
 			<br/>
@@ -500,10 +512,10 @@
 		});
 
 		$('#profilelink').click(function(){
-			$('.chatscreen').fadeOut(1200);
-			$('footer').fadeOut(1200);
+			$('.chatscreen').fadeOut(600);
+			$('footer').fadeOut(600);
 			$('.main-menu').css('bottom', '0px');
-			$('.profileSection').fadeIn(1200);
+			$('.profileSection').fadeIn(800);
 		});
 
 		$('#profilecloselink').click(function(){
@@ -677,6 +689,37 @@
 		}); // end of document ready
 
 		$('.send-button').click(function() {$('#chatform').submit()});
+
+		function addFriend()
+		{
+			var email = $('#friendEmail').val();
+			var userId = '<%= user._id%>';
+			socket.emit('addFriend', {friendEmail: email, userId: userId});
+		}
+
+		function closeSuccessMessage()
+		{
+			$('.successMessage').fadeOut(800);
+		}
+
+		function closeErrorMessage()
+		{
+		$('.errorMessage').fadeOut(800);
+		}
+
+		$(".errorMessage").on('blur',function(){
+		    $(this).fadeOut(800);
+		});
+
+		$(".successMessage").on('blur',function(){
+		    $(this).fadeOut(800);
+		});
+
+		function deletefriend(friendId)
+		{
+			var userId = '<%= user._id%>';
+			socket.emit('deleteFriend', {friendId: friendId, userId: userId});
+		}
 
 	</script>
 

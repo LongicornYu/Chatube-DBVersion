@@ -6,8 +6,7 @@
 
 const APIAI_TOKEN = '0fa7fd48b5da40c381c4342bda4215ad';
 const APIAI_SESSION_ID = 'randomshit';
-const conString = "mongodb://admin:admin1234@ds239117.mlab.com:39117/chatubesandbox"
-
+const conString = "mongodb://admin:admin1234@ds249727.mlab.com:49727/chatubesandbox"
 
 var mongoose = require("mongoose"),
  session = require('express-session'),

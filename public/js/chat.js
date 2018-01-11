@@ -63,7 +63,9 @@ $(function(){
 			videoChatInvite = $(".videoChatInvite");
 			audioChatInviteCancelled = $(".audioChatInviteCancelled")
 			audioChatInviteOnwerCancelled = $(".audioChatInviteOnwerCancelled")
-			audioChatInvite = $(".audioChatInvite");
+			audioChatInvite = $(".audioChatInvite"),
+			successMessage = $(".successMessage"),
+			errorMessage = $(".errorMessage"),
 			tooManyPeople = $(".toomanypeople");
 
 		// some more jquery objects
@@ -79,7 +81,9 @@ $(function(){
 			chatForm = $("#chatform"),
 			textarea = $(".emoji-wysiwyg-editor"),
 			messageTimeSent = $(".timesent"),
-			chats = $(".chats");
+			chats = $(".chats"),
+			successMessageContent= $("#successMessageContent"),
+			errorMessageContent= $("#errorMessageContent");
 
 		// these variables hold images
 		var ownerImage = $("#ownerImage"),
@@ -213,6 +217,30 @@ $(function(){
 				socket.emit('login', {user: userObj.username, avatar: userObj.avatar, id: id, email: userObj.email, userId: userObj._id});
 
 		});
+
+		socket.on('showError', function(data){
+				console.log('geterror:'+ data.err);
+				showMessage("showError", data.err);
+		});
+
+		socket.on('showSuccessMessage', function(data){
+				console.log('getsuccess');
+				showMessage("showSuccessMessage", data.message);
+		});
+
+		socket.on('updateProfilFriendList', function(data){
+			console.log('getsuccess2');
+				$("#tr_" + data.friendId).remove();
+		});
+
+		socket.on('updateProfilFriendListAdd', function(data){
+			console.log('get success3');
+			var newRow = $('<tr id="tr_'+data.friendId+'">'+'<td>'+data.friendUsername+'</td>'+'<td class="deleteColumn"><i class="fa fa-trash" id="deleteFriend" onclick="deletefriend('+data.friendId+'); return false;" aria-hidden="true"></i></td>'+'</tr>');
+			console.log(newRow);
+			$('.friendTable tr:last').after(newRow);
+
+		});
+
 
 		// Other useful
 
@@ -582,6 +610,20 @@ $(function(){
 				chatScreen.css('display','block');
 				audioChatInviteWait.fadeOut(1200);
 				audioChatInviteCancelled.fadeIn(1200);
+			}
+			else if (status === "showSuccessMessage")
+			{
+				successMessageContent.text(data);
+				successMessage.css('display','block');
+				successMessage.focus();
+			}
+			else if (status === "showError")
+			{
+				console.log(data.toString());
+				errorMessageContent.text(data.toString());
+				errorMessage.css('display','block');
+				errorMessage.focus();
+
 			}
 		}
 	}

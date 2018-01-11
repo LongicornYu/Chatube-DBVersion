@@ -109,51 +109,6 @@ module.exports = function(app,io){
 	  }
 	})
 
-	app.post('/friend', function (req, res, next) {
-	  if (req.body.friendEmail) {
-	    //Check if friend already added
-		  User.findUserByEmail(req.body.friendEmail, function (error, friend) {
-	      if (error || !friend) {
-	        var err = new Error('User doesnt exist.');
-	        err.status = 401;
-	        return next(err);
-	      } else {
-					User.findById(req.session.userId).exec(function (error, user) {
-			      if (error) {
-			        return next(error);
-			      } else {
-			        if (user === null) {
-			          var err = new Error('Not authorized! Go back!');
-			          err.status = 400;
-			          return next(err);
-			        } else {
-								var fnd1 = {username: friend.username , id:friend._id};
-								var fnd_id_1 = user.friends.map(a => a.id);
-								if(fnd_id_1.indexOf(friend._id) === -1) {
-			          	user.friends.push(fnd1);
-									user.save();
-								}
-
-								var fnd2 = {username: user.username , id:user._id};
-								var fnd_id_2 = friend.friends.map(a => a.id);
-								if(fnd_id_2.indexOf(user._id) === -1) {
-									friend.friends.push(fnd2);
-									friend.save();
-								}
-				        return res.render('chat', {user:user});
-			        }
-			      }
-			    });
-	      }
-	    });
-
-	  } else {
-	    var err = new Error('All fields required.');
-	    err.status = 400;
-	    return next(err);
-	  }
-	})
-
 	app.get('/videoChat', function(req, res){
 
 		// Render views/videoChat.html
@@ -280,6 +235,109 @@ module.exports = function(app,io){
 			socket.emit('peopleinchat', {number: room.length});
 
 		});
+
+		socket.on('addFriend',function(data){
+			if (data.friendEmail) {
+				//Check if friend already added
+				User.findUserByEmail(data.friendEmail, function (error, friend) {
+					if (error || !friend) {
+					    var err = new Error('User doesnt exist.');
+					    err.status = 401;
+					    socket.emit('showError', {err: 'User doesnt exist.'});
+			        } else {
+								User.findById(data.userId).exec(function (error, user) {
+									if (error) {
+							    	return next(error);
+									} else {
+							    	if (user === null) {
+							    		var err = new Error('Not authorized! Go back!');
+							        err.status = 400;
+							        socket.emit('showError', {err: 'Not authorized! Go back!'});
+							    	} else {
+							    		if (friend._id.toString() === user._id.toString())
+							    		{
+							    				var err = new Error('Cannot add yourself as friend');
+								        	err.status = 400;
+								        	socket.emit('showError', {err: 'Cannot add yourself as friend'});
+							    		}
+							    		else
+							    		{
+													var fnd1 = {username: friend.username , id:friend._id};
+													var fnd_id_1 = user.friends.map(a => a.id);
+													console.log(fnd_id_1.indexOf(friend._id.toString()));
+													if(fnd_id_1.indexOf(friend._id.toString()) === -1) {
+														user.friends.push(fnd1);
+														user.save();
+													}
+													else
+													{
+														console.log('a7');
+														var err = new Error('User already in your friend list');
+											        	err.status = 400;
+											        	socket.emit('showError', {err: 'User already in your friend list'});
+													}
+
+													var fnd2 = {username: user.username , id:user._id};
+													var fnd_id_2 = friend.friends.map(a => a.id);
+													console.log(fnd_id_2.indexOf(user._id.toString()))
+													if(fnd_id_2.indexOf(user._id.toString()) === -1) {
+														friend.friends.push(fnd2);
+														friend.save();
+														socket.emit('updateProfilFriendListAdd', {friendId:friend._id.toString(), friendUsername:friend.username});
+														socket.emit('showSuccessMessage', {message:'Friend added successfully'});
+													}
+								    }
+						      }
+					      }
+				    	});
+			      	}
+				});
+
+			} else {
+				var err = new Error('All fields required.');
+				err.status = 400;
+				socket.emit('showError', {err: err});
+			}
+		});
+
+
+		socket.on('deleteFriend',function(data){
+			User.findById(data.userId).exec(function (error, user) {
+				if (error) {
+					return next(error);
+				} else {
+					if (user === null) {
+						var err = new Error('Not authorized! Go back!');
+						err.status = 400;
+						socket.emit('showError', {err: 'Not authorized! Go back!'});
+					} else {
+						User.findById(data.friendId).exec(function (error, friend) {
+							if (error) {
+								return next(error);
+							} else {
+								if (friend === null) {
+									var err = new Error('Not authorized! Go back!');
+									err.status = 400;
+									socket.emit('showError', {err: 'Not authorized! Go back!'});
+								} else {
+									var fnd_id_1 = user.friends.map(a => a.id);
+									var index = fnd_id_1.indexOf(friend._id.toString());
+									user.friends.splice(index, 1);
+									user.save();
+
+									var fnd_id_2 = friend.friends.map(a => a.id);
+								  index = fnd_id_2.indexOf(user._id.toString());
+									friend.friends.splice(index, 1);
+									friend.save();
+									socket.emit('updateProfilFriendList', {friendId:data.friendId});
+									socket.emit('showSuccessMessage', {message:'Friend deleted successfully'});
+								}
+							}
+						});
+					}
+				}
+		});
+	});
 
 		// When the client emits 'login', save his name and avatar,
 		// and add them to the room

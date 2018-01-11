@@ -1601,6 +1601,14 @@ body .send-button .icon-wrapper .icon-2 {
 	display: none;
 }
 
+.errorMessage {
+	display: none;
+}
+
+.successMessage {
+	display: none;
+}
+
 .videoChatInviteWait {
 	display: none;
 }
@@ -2183,12 +2191,15 @@ nav ul,nav li {
 
 .profileSection{
 	text-align:center;
-	margin-top:20px;
 	background: rgba(255,255,255,0.6);
-	margin: 0 auto;
 	width: 400px;
 	height: auto;
 	overflow:auto;
+	position: absolute;
+    left: 0;
+    right: 0;
+    margin: auto;
+
 }
 
 .trueonlinestatus{
@@ -2221,6 +2232,17 @@ nav ul,nav li {
 
 #profilecloselink:hover {background-color: #ddd;}
 
+#deleteFriend {
+	float:right;
+	margin-top:5px;
+	height:15px;
+	cursor:pointer;
+}
+
+.deleteColumn {
+	width:20px;
+	valign="bottom"
+}
 /*---------------Profile ----------------------------*/
 .friendTable {
     border-collapse: collapse;
@@ -2344,4 +2366,92 @@ nav ul,nav li {
 
 #friendlink{
 	width:250px;
+}
+
+
+
+/* ----- error messages-----*/
+.errorMessage {
+	text-align:center;
+	float:left;
+	width: 600px;
+	height: 60px;
+	background-color: #ffffff;
+	color: #637277;
+	border-radius: 15px;
+ 	position: absolute;
+    top:0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    z-index:2;
+		outline: 0;
+}
+.errorMessage h2 {
+	padding-top: 20px;
+	width: auto;
+	overflow: hidden;
+	display: inline-block;
+	margin: 0px 0px 0px 10px;
+}
+
+.errorMessage img {
+	margin: auto;
+	width: 30px;
+	height: 30px;
+	border-radius: 50%;
+}
+
+.errorMessage #close {
+	float:right;
+	margin-right:20px;
+	cursor: pointer;
+}
+
+.errorMessage :focus {
+	outline: none;
+}
+/* ----- sucess messages-----*/
+.successMessage {
+	text-align:center;
+	float:left;
+	width: 600px;
+	height: 60px;
+	background-color: #ffffff;
+	color: #637277;
+	border-radius: 15px;
+ 	position: absolute;
+    top:0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    z-index:2;
+		outline: 0;
+
+}
+.successMessage h2 {
+	padding-top: 20px;
+	display: inline-block;
+	width: auto;
+	overflow: hidden;
+	margin: 0px 10px 0px 10px;
+}
+
+.successMessage img {
+	margin: 50px 0px 0px 0px;
+	width: 30px;
+	height: 30px;
+	border-radius: 50%;
+}
+
+.successMessage #close {
+	float:right;
+	margin-right:20px;
+	cursor: pointer;
+}
+
+.successMessage :focus {
+	outline: none;
 }
