@@ -13,7 +13,7 @@ recognition.lang = 'en-US';
 recognition.interimResults = false;
 recognition.maxAlternatives = 1;
 
-document.querySelector('button').addEventListener('click', () => {
+btnMic.addEventListener('click', () => {
   recognition.start();
   btnMic.disabled = true;
   //outputYou.disabled = true;
