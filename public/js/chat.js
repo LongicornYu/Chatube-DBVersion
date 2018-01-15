@@ -7,8 +7,6 @@ $(function(){
 	socket.on('connect', function(){
 		console.log('socket connect:'+userObj);
 		socket.emit('friendStatusChange', {userId: userObj._id});
-		socket.emit('personalChatConnect', {id: userObj._id, userId:userObj._id, user:userObj.Username});
-
 	});
 
 	socket.on('refreshFriendList', function(data){

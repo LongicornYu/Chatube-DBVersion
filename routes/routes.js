@@ -236,17 +236,6 @@ module.exports = function(app,io){
 
 		});
 
-		socket.on('personalChatConnect',function(data){
-
-			console.log('personalChatConnect');
-			var room = findClientsSocket(io,'ps'+data.id.toString());
-			console.log('ps'+data.id.toString());
-			socket.join('ps'+data.id.toString());
-
-		});
-
-
-
 		socket.on('addFriend',function(data){
 			console.log('addFriend!');
 			if (data.friendEmail) {
