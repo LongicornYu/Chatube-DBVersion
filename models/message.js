@@ -1,18 +1,6 @@
 var mongoose = require('mongoose');
 
 var MessageSchema = new mongoose.Schema({
-  toUserId: {
-    type: String,
-    unique: false,
-    required: true,
-    trim: true
-  },
-  fromUserId: {
-    type: String,
-    unique: false,
-    required: true,
-    trim: true
-  },
   sentDatetime: {
     type: Date,
     required: true
@@ -27,19 +15,17 @@ var MessageSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
-  fromUserImg: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  fromUsername: {
-    type: String,
-    required: true,
-    trim: true
-  },
   isImageMessage: {
     type: Boolean,
     required:true
+  },
+  fromUser:{
+    type:mongoose.Schema.Types.ObjectId,
+    ref:'User'
+  },
+  toUser:{
+    type:mongoose.Schema.Types.ObjectId,
+    ref:'User'
   }
 });
 

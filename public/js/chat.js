@@ -1,6 +1,7 @@
 // This file is executed in the browser, when people visit /chat/<random id>
 
 $(function(){
+	console.log(userObj.friends);
 	console.log('connect');
 	var socket = io();
 
@@ -246,20 +247,36 @@ $(function(){
 
 		socket.on('startChat', function(data){
 
-			if(data.boolean && data.id == id) {
+			if (userObj._id.toString() != friendObj._id.toString())
+			{
+				if(data.boolean && data.id == id) {
 
+					chats.empty();
+					if(messagesObj != null)
+					{
+						for (var i in messagesObj) {
+							createChatMessage(messagesObj[i].isImage,messagesObj[i].message,messagesObj[i].fromUser._id,messagesObj[i].fromUser.avatar,moment(new Date(messagesObj[i].sentDatetime)), false, messagesObj[i].fromUser.username);
+						}
+					}
+
+					showMessage("chatStarted");
+
+				}
+			}
+			else
+			{
 				chats.empty();
 				if(messagesObj != null)
 				{
 					for (var i in messagesObj) {
-						createChatMessage(messagesObj[i].isImage,messagesObj[i].message,messagesObj[i].fromUsername,messagesObj[i].fromUserImg,moment(new Date(messagesObj[i].sentDatetime)));
+						createChatMessage(messagesObj[i].isImage,messagesObj[i].message,messagesObj[i].fromUser._id,messagesObj[i].fromUser.avatar,moment(new Date(messagesObj[i].sentDatetime)), i==0, messagesObj[i].fromUser.username);
 					}
 				}
-
-				showMessage("chatStarted");
-
+				showMessage("selfchatStarted");
 			}
 		});
+
+
 
 		/*socket.on('leave',function(data){
 
@@ -290,14 +307,14 @@ $(function(){
 	    	if (!data.isImage)
 	    	{
 				if(data.msg.trim().length) {
-					createChatMessage(data.isImage,data.msg, data.user, data.img, moment());
+					createChatMessage(data.isImage,data.msg, data.user, data.img, moment(), false, data.username);
 					scrollToBottom();
 				}
 			}
 			else
 			{
 				if(data.msg.trim().length) {
-					createChatMessage(data.isImage, data.msg, data.user, data.img, moment());
+					createChatMessage(data.isImage, data.msg, data.user, data.img, moment(), false, data.username);
 					scrollToBottom();
 				}
 			}
@@ -324,14 +341,15 @@ $(function(){
 
 					if (textarea.html().includes("<img"))
 					{
-						createChatMessage(true,textarea.html().toString(), userObj.username, userObj.avatar, moment());
+						createChatMessage(true,textarea.html().toString(), userObj._id.toString(), userObj.avatar, moment(), false, userObj.username);
 						scrollToBottom();
 
 						socket.emit('msg', { isImage: true, msg: textarea.html().toString(), user: userObj.username, img: userObj.avatar, sendtoUserId:friendObj._id, sendfromUserId:userObj._id,chatId:chatObj._id});
 					}
 					else
 					{
-						createChatMessage(false,textarea.html(), userObj.username, userObj.avatar, moment());
+						createChatMessage(false,textarea.html(), userObj._id.toString(), userObj.avatar, moment(), false, userObj.username);
+						scrollToBottom();
 						scrollToBottom();
 
 						// Send the message to the other person in the chat
@@ -417,15 +435,21 @@ $(function(){
 		}
 
 		// Function that creates a new chat message
-		function createChatMessage(isImage,msg,user,imgg,now){
+		function createChatMessage(isImage,msg,user,imgg,now, isSelf, username){
 
 			var who = '';
 
-			if(user===userObj.username) {
+			if(user.toString()===userObj._id.toString()) {
 				who = 'me';
 			}
 			else {
 				who = 'you';
+			}
+
+			if (isSelf)
+			{
+				var selfMessage = $('<h3 class="selfChatMessage">This is your own space. You can talk to yourself, list to-dos, draft messages and archive messages here</h3>')
+				chats.append(selfMessage);
 			}
 
 			var li = $(
@@ -464,7 +488,7 @@ $(function(){
 				li.find('b').text('Me');
 			}
 			else {
-				li.find('b').text(user);
+				li.find('b').text(username);
 			}
 			chats.append(li);
 
@@ -526,6 +550,13 @@ $(function(){
 				footer.css('display', 'block');
 				$('.main-menu').css('bottom', '150px');
 				chatScreen.css('display','block');
+			}
+			else if(status === "selfchatStarted"){
+				$('.chatscreen').fadeOut(600);
+				$('footer').fadeOut(600);
+				$('.main-menu').css('bottom', '0px');
+				$('.profileSection').fadeIn(800);
+
 			}
 
 			else if(status === "somebodyLeft"){

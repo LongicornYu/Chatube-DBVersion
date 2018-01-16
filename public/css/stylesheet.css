@@ -5,7 +5,6 @@
 	margin: 0;
 }
 
-
 /* ------------ Body styles ------------ */
 
 
@@ -24,6 +23,100 @@ html {
 	background-image: url("../img/background.jpg");
 
 }
+
+/*--------------Login & Register Page---------------*/
+.registerSection {
+	text-align:center;
+	margin-top:20px;
+	background: rgba(255,255,255,0.5);
+	margin: 0 auto;
+	width: 900px;
+	height: 500px;
+}
+
+.loginRegisterFormLabel {
+  display: block;
+  letter-spacing: 3px;
+  padding-top: 30px;
+  text-align: center;
+}
+.loginRegisterFormLabel .label-text {
+  color: white;
+  cursor: text;
+  font-size: 15px;
+  line-height: 20px;
+  text-transform: uppercase;
+  -moz-transform: translateY(-34px);
+  -ms-transform: translateY(-34px);
+  -webkit-transform: translateY(-34px);
+  transform: translateY(-34px);
+  transition: all 0.3s;
+}
+.loginRegisterFormLabel input {
+  background-color: transparent;
+  border: 0;
+  border-bottom: 2px solid #4A4A4A;
+  color: white;
+  font-size: 25px;
+  letter-spacing: -1px;
+  outline: 0;
+  padding: 5px 20px;
+  text-align: center;
+  transition: all 0.3s;
+  width: 150px;
+}
+.loginRegisterFormLabel input:focus {
+  max-width: 100%;
+  width: 280px;
+}
+.loginRegisterFormLabel input:focus + .label-text {
+  color: #F0F0F0;
+  font-size: 13px;
+  -moz-transform: translateY(-74px);
+  -ms-transform: translateY(-74px);
+  -webkit-transform: translateY(-74px);
+  transform: translateY(-74px);
+}
+.loginRegisterFormLabel input:valid + .label-text {
+  font-size: 13px;
+  -moz-transform: translateY(-74px);
+  -ms-transform: translateY(-74px);
+  -webkit-transform: translateY(-74px);
+  transform: translateY(-74px);
+}
+
+.loginRegisterButton {
+  background-color: #333333;
+  border: 2px solid white;
+  border-radius: 27px;
+  color: white;
+  cursor: pointer;
+  font-size: 15px;
+  margin-top: 15px;
+  padding: 15px 30px;
+  text-transform: uppercase;
+  transition: all 200ms;
+}
+.loginRegisterButton:hover, .loginRegisterButton:focus {
+  background-color: white;
+  color: #333333;
+  outline: 0;
+}
+
+.login-form {
+	padding-top:30%;
+}
+
+.register-form {
+	float:left;
+	margin-top:20px;
+	margin-left:20px;
+}
+
+#friendlink{
+	width:250px;
+}
+
 
 /*------------- Volume picker ------------ */
 #volume-slider{
@@ -93,8 +186,8 @@ html {
 	margin-right:40px;
 	cursor: pointer;
 }
-/* ------ Home ------ */
 
+/* ------ Home ------ */
 
 .homebanner {
 	height: 120px;
@@ -232,7 +325,6 @@ a:active .line.-bottom {
 }
 
 /* ------ Invite ------ */
-
 
 .banner {
 	height: 70px;
@@ -433,22 +525,6 @@ a:active .line.-bottom {
 }
 
 .registerField {
-	display:block;
-	padding-left:10px;
-	width: 40%;
-	height: 30px;
-	border-radius: 3px;
-	box-shadow:0px 3px 3px #e3e4e6;
-	background-color: #f0f1f3;
-	border: 1px solid #d1d1d1;
-	border-radius: 3px;
-	box-shadow:0px 3px 3px #e3e4e6;
-	margin-bottom:20px;
-	margin-left:28%;
-	overflow: hidden;
-}
-
-.profileField {
 	display:block;
 	padding-left:10px;
 	width: 40%;
@@ -2241,20 +2317,20 @@ nav ul,nav li {
 
 .deleteColumn {
 	width:20px;
-	valign="bottom"
+	valign=bottom;
 }
 /*---------------Profile ----------------------------*/
 .friendTable {
     border-collapse: collapse;
-    width: 90%;
-		border: 1px solid grey;
+    width: 80%;
+	border: 1px solid grey;
     margin-left: auto;
     margin-right: auto;
 }
 
 .friendTable td {
     padding: 8px;
-		text-align: center;
+	text-align: center;
 }
 
 .friendTable tr:nth-child(even){background-color: rgba(242, 242, 242, 0.6);}
@@ -2275,99 +2351,84 @@ nav ul,nav li {
 	font-size:12px !important;
 }
 
-/*--------------Login & Register Page---------------*/
-.registerSection {
-	text-align:center;
-	margin-top:20px;
-	background: rgba(255,255,255,0.5);
-	margin: 0 auto;
-	width: 900px;
-	height: 500px;
+#profileInfoUpdateForm input:not([type="submit"]),#friendForm input:not([type="submit"]),#passwordUpdateForm input:not([type="submit"]) {
+	display:inline-block;
+	width: 80%;
+	text-align: center;
+	height: 45px;
+	border-radius: 3px;
+	box-shadow:0px 3px 3px #e3e4e6;
+	background-color: #f0f1f3;
+	border: 1px solid #d1d1d1;
+	border-radius: 3px;
+	box-shadow:0px 3px 3px #e3e4e6;
+	overflow: hidden;
+  	border-radius: 5px;
+  	margin-bottom:10px;
+  	transition: border-color .5s ease-out;
+}
+#profileInfoUpdateForm input:not([type="submit"]):optional,#passwordUpdateForm input:not([type="submit"]):optional, #friendForm input:not([type="submit"]):optional{
+  border-left-color: #999;
+  border-left-width: 3px;
+}
+#profileInfoUpdateForm input:not([type="submit"]):required:valid,#passwordUpdateForm input:not([type="submit"]):required:valid, #friendForm input:not([type="submit"]):required:valid{
+  border-left-color: palegreen;
+  border-left-width: 3px;
+}
+#profileInfoUpdateForm input:not([type="submit"]):invalid,#passwordUpdateForm input:not([type="submit"]):invalid, #friendForm input:not([type="submit"]):invalid{
+  border-left-color: salmon;
+  border-left-width: 3px;
+}
+#profileInfoUpdateForm input:not([type="submit"]):required:focus:valid,#passwordUpdateForm input:not([type="submit"]):required:focus:valid #friendForm input:not([type="submit"]):required:focus:valid{
+  background: url("../img/success.png") no-repeat 95% 50%;
+  background-size: 25px;
+}
+#profileInfoUpdateForm input:not([type="submit"]):focus:invalid,#passwordUpdateForm input:not([type="submit"]):focus:invalid, #friendForm input:not([type="submit"]):focus:invalid{
+  background: url("../img/invalid.png") no-repeat 95% 50%;
+  background-size: 25px;
 }
 
-.loginRegisterFormLabel {
-  display: block;
-  letter-spacing: 3px;
-  padding-top: 30px;
-  text-align: center;
-}
-.loginRegisterFormLabel .label-text {
-  color: white;
-  cursor: text;
-  font-size: 15px;
-  line-height: 20px;
-  text-transform: uppercase;
-  -moz-transform: translateY(-34px);
-  -ms-transform: translateY(-34px);
-  -webkit-transform: translateY(-34px);
-  transform: translateY(-34px);
-  transition: all 0.3s;
-}
-.loginRegisterFormLabel input {
-  background-color: transparent;
-  border: 0;
-  border-bottom: 2px solid #4A4A4A;
-  color: white;
-  font-size: 25px;
-  letter-spacing: -1px;
-  outline: 0;
-  padding: 5px 20px;
-  text-align: center;
-  transition: all 0.3s;
-  width: 150px;
-}
-.loginRegisterFormLabel input:focus {
-  max-width: 100%;
-  width: 280px;
-}
-.loginRegisterFormLabel input:focus + .label-text {
-  color: #F0F0F0;
-  font-size: 13px;
-  -moz-transform: translateY(-74px);
-  -ms-transform: translateY(-74px);
-  -webkit-transform: translateY(-74px);
-  transform: translateY(-74px);
-}
-.loginRegisterFormLabel input:valid + .label-text {
-  font-size: 13px;
-  -moz-transform: translateY(-74px);
-  -ms-transform: translateY(-74px);
-  -webkit-transform: translateY(-74px);
-  transform: translateY(-74px);
-}
-
-.loginRegisterButton {
+.profileButton {
   background-color: #333333;
   border: 2px solid white;
   border-radius: 27px;
   color: white;
   cursor: pointer;
-  font-size: 15px;
+  font-size: 12px;
   margin-top: 15px;
-  padding: 15px 30px;
+  padding: 7px 15px;
   text-transform: uppercase;
   transition: all 200ms;
 }
-.loginRegisterButton:hover, .loginRegisterButton:focus {
+.profileButton:hover, .profileButton:focus {
   background-color: white;
   color: #333333;
   outline: 0;
 }
 
-.login-form {
-	padding-top:30%;
+#profileImg {
+	display:inline-block;
+	height:30px; 
+	width:30px;
 }
 
-.register-form {
-	float:left;
-	margin-top:20px;
-	margin-left:20px;
+#profileTitle {
+	display:inline-block;
+	font-size:35px;
+	font-weight: bold;
 }
 
-#friendlink{
-	width:250px;
+.profileSection hr {
+	width: 60%;
+	margin-left: auto;
+	margin-right: auto;
+	border-color: lightgray;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 }
 
+.space { margin-top: 40px; }
+
+.space2 { margin-top: 20px; }
 
 
 /* ----- error messages-----*/
@@ -2428,7 +2489,7 @@ nav ul,nav li {
     right: 0;
     margin: auto;
     z-index:2;
-		outline: 0;
+	outline: 0;
 
 }
 .successMessage h2 {
@@ -2454,4 +2515,10 @@ nav ul,nav li {
 
 .successMessage :focus {
 	outline: none;
+}
+
+.selfChatMessage{
+	color: white;
+	text-align: center;
+	margin-bottom:20px;
 }

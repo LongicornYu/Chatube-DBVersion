@@ -419,24 +419,38 @@
 
 		<div class="profileSection">
 		  <br/>
-			<h1>Profile</h1>
-			<br/>
-			<form>
-				<input type="text" name="email" class="profileField" placeholder="E-mail" value="<%=user.email%>" required="">
-				<input type="text" name="username" class="profileField" placeholder="Username" value="<%=user.username%>" required="">
-				<input type="password" name="password" class="profileField" placeholder="Password" value="<%=user.password%>" required="">
+			<div class="profileHeader">
+				<img id="profileImg" src="../img/profile.png"></img>				
+				<div id="profileTitle"><%=user.username%> Profile</div>
+			</div>
 
-				<input type="password" name="newpassword" class="profileField" placeholder="New Password" required="">
-				<input type="password" name="newpasswordConf" class="profileField" placeholder="Confirm New Password" required="">
+			<hr/>
+			<div class="space2"></div>
+			<h1>User Info</h1>
+
+			<div class="space2"></div>
+			<form id="profileInfoUpdateForm">
+				<input type="text" name="email" id="emailUpdate" placeholder="E-mail" value="<%=user.email%>" required="">
+				<input type="text" name="username" id="usernameUpdate" placeholder="Username" value="<%=user.username%>" required="">
 				<div class="tp">
-					<input type="submit" class="yourEnter" onclick="saveProfile(); return false;" value="Save">
+					<input type="submit" class="profileButton" value="Save">
 				</div>
 			</form>
-			<br/>
-			<br/>
-			<br/>
+			<div class="space"></div>
+			<h1>Change Password</h1>
+			<div class="space2"></div>
+			<form id="passwordUpdateForm">
+				<input type="password" name="password" id="originalpwdUpdate"  placeholder="Password" value="<%=user.password%>" required="">
+				<input type="password" name="newpassword" id="newpwdUpdate"  placeholder="New Password"  required="">
+				<input type="password" name="newpasswordConf" id="newpwdconfirmUpdate" placeholder="Confirm New Password" oninput="passwordConfirm(this)"  
+				required="">
+				<div class="tp">
+					<input type="submit" class="profileButton" value="Save">
+				</div>
+			</form>
+			<div class="space"></div>
 			<h3>Friends</h3>
-			<br/>
+			<div class="space2"></div>
 			<table class="friendTable">
 				<% for(var i=0; i < user.friends.length; i++) { %>
 				   <tr id="tr_<%= user.friends[i].id %>">
@@ -445,17 +459,16 @@
 				   </tr>
 				<% } %>
 			</table>
-			<br/><br/>
+			<div class="space"></div>
 			<h3>Add Friend</h3>
-			<br/>
-
-				<input type="text" name="friendEmail" id="friendEmail" class="profileField" placeholder="friend's E-mail" required="">
+			<div class="space2"></div>
+			<form id="friendForm">
+				<input type="email" name="friendEmail" id="friendEmail" placeholder="friend's E-mail" required="">
 				<div class="tp">
-					<button class="yourEnter" onclick="addFriend(); return false;" >Add</button>
+					<button class="profileButton" >Add</button>
 				</div>
-			<br/>
-			<br/>
-			<br/>
+			</form>
+			<div class="space"></div>
 			<button  id="profilecloselink">&#8249;</button>
 
 		</div>
@@ -513,16 +526,15 @@
 			window.emojiPicker.discover();
 		});
 
-		$('#profilelink').click(function(){
-			$('.chatscreen').fadeOut(600);
-			$('footer').fadeOut(600);
-			$('.main-menu').css('bottom', '0px');
-			$('.profileSection').fadeIn(800);
-		});
-
 		$('#profilecloselink').click(function(){
 
 			$('.profileSection').fadeOut(1200);
+				$(".section").children().css('display','none');
+				
+				$("footer").css('display', 'block');
+				$('.main-menu').css('bottom', '150px');
+				$(".chatscreen").css('display','block');
+
 		});
 
 
@@ -692,12 +704,14 @@
 
 		$('.send-button').click(function() {$('#chatform').submit()});
 
-		function addFriend()
+		$('#friendForm').submit(function(ev)
 		{
+			ev.preventDefault();
+
 			var email = $('#friendEmail').val();
 			var userId = '<%= user._id%>';
 			socket.emit('addFriend', {friendEmail: email, userId: userId});
-		}
+		});
 
 		function closeSuccessMessage()
 		{
@@ -722,6 +736,34 @@
 			var userId = '<%= user._id%>';
 			socket.emit('deleteFriend', {friendId: friendId, userId: userId});
 		}
+
+		$('#profileInfoUpdateForm').submit(function(ev) {
+		    ev.preventDefault(); // to stop the form from submitting
+		    var email = $('#emailUpdate').val();
+			var userId = '<%= user._id%>';
+			var username = $('#usernameUpdate').val();
+		    
+		   	socket.emit('saveProfile', {email:email, username:username, userId: userId}); 
+		});
+
+		$('#passwordUpdateForm').submit(function(ev) {
+		    ev.preventDefault(); // to stop the form from submitting
+			var userId = '<%= user._id%>';
+			var originalpwd = $('#originalpwdUpdate').val();
+			var newpwdUpdate = $('#newpwdUpdate').val();
+			var newpwdConfirm = $('#newpwdconfirmUpdate').val();
+		    
+		   	socket.emit('savePassword', {oldpwd:originalpwd, newpwd:newpwdUpdate, newpwdConfirm: newpwdConfirm, userId: userId}); 
+		});
+
+		function passwordConfirm(input) {
+			if (input.value != document.getElementById('newpwdUpdate').value) {
+				input.setCustomValidity('The two passwords must match.');
+			} else {
+				input.setCustomValidity('');
+			}
+		}
+			
 
 	</script>
 

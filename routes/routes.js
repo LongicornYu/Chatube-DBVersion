@@ -142,8 +142,9 @@ module.exports = function(app,io){
 	        }]}).exec(function (err, chat) {
 						if(chat)
 						{
-							Message.find({ chatId: chat._id }).sort('sentDatetime').exec(function (err, messages)
+							Message.find({ chatId: chat._id }).populate('fromUser').sort('sentDatetime').exec(function (err, messages)
 							{
+									console.log(messages);
 									res.render('chat', {user:user,friendlist:items, friend:friend, chat: chat, messages:messages});
 							});
 						}
@@ -337,9 +338,52 @@ module.exports = function(app,io){
 						});
 					}
 				}
+			});
 		});
-	});
 
+		socket.on('saveProfile',function(data){
+			User.findById(data.userId).exec(function (error, user) {
+				if (error) {
+					return next(error);
+				} else {
+					if (user === null) {
+						socket.emit('showError', {err: 'Not authorized! Go back!'});
+					} else {
+						
+						user.email = data.email;
+						user.username = data.username;
+						user.save();
+						socket.emit('showSuccessMessage', {message:'User Profile Updated Successfully'});
+						
+					}
+				}
+			});
+		});
+		
+
+		socket.on('savePassword',function(data){
+			User.findById(data.userId).exec(function (error, user) {
+				if (error) {
+					return next(error);
+				} else {
+					if (user === null) {
+						socket.emit('showError', {err: 'Not authorized! Go back!'});
+					} else {
+						if (data.oldpwd != user.password)
+						{
+							socket.emit('showError', {err: 'wrong original password'});
+						}
+						else
+						{
+							user.password = data.newpwd;
+							user.passwordConf = data.newpwdConfirm;
+							user.save();
+							socket.emit('showSuccessMessage', {message:'Password Updated Successfully'});
+						}
+					}
+				}
+			});
+		});
 		// When the client emits 'login', save his name and avatar,
 		// and add them to the room
 		socket.on('login', function(data) {
@@ -549,10 +593,8 @@ module.exports = function(app,io){
 		// Handle the sending of messages
 		socket.on('msg', function(data){
 			var messageData = {
-		      toUserId: data.sendtoUserId,
-		      fromUserId: data.sendfromUserId,
-					fromUsername: data.user,
-					fromUserImg: data.img,
+		      toUser: data.sendtoUserId,
+		      fromUser: data.sendfromUserId,
 		      sentDatetime: new Date(),
 		      chatId: data.chatId,
 		      message: data.msg,
@@ -565,7 +607,7 @@ module.exports = function(app,io){
 		      }
 		    });
 			// When the server receives a message, it sends it to the other person in the room.
-			socket.broadcast.to(socket.room).emit('receive', {isImage: data.isImage, msg: data.msg, user: data.user, img: data.img});
+			socket.broadcast.to(socket.room).emit('receive', {isImage: data.isImage, msg: data.msg, user: data.sendfromUserId, img: data.img, username:data.user});
 		});
 
 		socket.on('snapReceived', function(data){
