@@ -1,795 +1,889 @@
 <!DOCTYPE html>
-
 <!--
-	This file is rendered by express.js, when the rurl /chat/123456 is visited in a browser.
-	It includes jQuery, socket.io.js (it is automatically served by the socket.io library),
-	and a few more JavaScript files that you should check out.
--->
-
+   This file is rendered by express.js, when the rurl /chat/123456 is visited in a browser.
+   It includes jQuery, socket.io.js (it is automatically served by the socket.io library),
+   and a few more JavaScript files that you should check out.
+   -->
 <html>
 
 <head>
-
-	<title>Chatube</title>
-
-	<link type="text/css" rel="stylesheet" href="../css/stylesheet.css" />
-	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-	<link href="../css/emojipicker.css" rel="stylesheet">
-	<link href="../css/emoji.css" rel="stylesheet" type="text/css" />
-  	<link href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet" />
-	<link href="https://fonts.googleapis.com/css?family=Open+Sans Condensed:300italic,300,700" rel="stylesheet" type="text/css">
-	<link href = "https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css" rel="stylesheet">
-	<script src="../js/emoji.js" type="text/javascript"></script>
-	<script src="../js/screenshot.js" type="text/javascript"></script>
-	<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
-	<script src="https://code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
-	<script>
-			$(function() {
-		    	$("#videoChatArea").draggable();
-			});
-	</script>
-
-	<style>
-				#container {
-						position: relative;
-						display: block;
-						width: auto;
-						height: auto;
-
-				}
-				#text-input {
-				}
-				#text-input:empty:before{
-						content: attr(placeholder);
-						display: block;
-				}
-				#icon{
-						color: #000;
-						display: block;
-						float:left;
-				}
-				#icon:hover{
-						cursor: pointer;
-				}
-		</style>
+    <title>Chatube</title>
+    <link type="text/css" rel="stylesheet" href="../css/stylesheet.css" />
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="../css/emojipicker.css" rel="stylesheet">
+    <link href="../css/emoji.css" rel="stylesheet" type="text/css" />
+    <link href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans Condensed:300italic,300,700" rel="stylesheet" type="text/css">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css" rel="stylesheet">
+    <script src="../js/emoji.js" type="text/javascript"></script>
+    <script src="../js/screenshot.js" type="text/javascript"></script>
+    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+    <script>
+        $(function() {
+               $("#videoChatArea").draggable();
+         });
+    </script>
+    <style>
+        #container {
+         position: relative;
+         display: block;
+         width: auto;
+         height: auto;
+         }
+         #text-input {
+         }
+         #text-input:empty:before{
+         content: attr(placeholder);
+         display: block;
+         }
+         #icon{
+         color: #000;
+         display: block;
+         float:left;
+         }
+         #icon:hover{
+         cursor: pointer;
+         }
+    </style>
 </head>
 
 <body>
-
-	<header class="banner">
-
-		<div class="bannertext">
-			<img src="../img/chatsmalllogo.png" alt="chatlogo" id="chatsmalllogo" />
-			<a href="" id="logo">ChatTube</a>
-			<img src="../img/volume.png" alt="volumeButton" id="BtnVolume" />
-			<div id="volume-slider">
-			  <svg id="volume-icon" class="volume-icon" viewBox="-1 0 33 32">
-			    <defs>
-			      <mask id="circle-mask" x="-1" y="0" width="33" height="32">
-			        <circle cx="-1" cy="16" r="33" fill="white" id="circle-mask-shape" />
-			      </mask>
-
-			      <mask id="volume-mask" x="-1" y="0" width="33" height="32">
-			        <path d="M22.485 25.985c-0.384 0-0.768-0.146-1.061-0.439-0.586-0.586-0.586-1.535 0-2.121 4.094-4.094 4.094-10.755 0-14.849-0.586-0.586-0.586-1.536 0-2.121s1.536-0.586 2.121 0c2.55 2.55 3.954 5.94 3.954 9.546s-1.404 6.996-3.954 9.546c-0.293 0.293-0.677 0.439-1.061 0.439v0zM17.157 23.157c-0.384 0-0.768-0.146-1.061-0.439-0.586-0.586-0.586-1.535 0-2.121 2.534-2.534 2.534-6.658 0-9.192-0.586-0.586-0.586-1.536 0-2.121s1.535-0.586 2.121 0c3.704 3.704 3.704 9.731 0 13.435-0.293 0.293-0.677 0.439-1.061 0.439zM13 30c-0.26 0-0.516-0.102-0.707-0.293l-7.707-7.707h-3.586c-0.552 0-1-0.448-1-1v-10c0-0.552 0.448-1 1-1h3.586l7.707-7.707c0.286-0.286 0.716-0.372 1.090-0.217s0.617 0.519 0.617 0.924v26c0 0.404-0.244 0.769-0.617 0.924-0.124 0.051-0.254 0.076-0.383 0.076z" fill="white" mask="url(#circle-mask)"></path>
-			      </mask>
-
-			      <linearGradient id="grad-1" x1="0" x2="1" y1="0" y2="0">
-			        <stop offset="20%" stop-color="#9a88aa" />
-			        <stop offset="100%" stop-color="#6e33a5" />
-			      </linearGradient>
-			    </defs>
-
-			    <path class="volume-icon-bg" fill="#cbc8ce" d="M22.485 25.985c-0.384 0-0.768-0.146-1.061-0.439-0.586-0.586-0.586-1.535 0-2.121 4.094-4.094 4.094-10.755 0-14.849-0.586-0.586-0.586-1.536 0-2.121s1.536-0.586 2.121 0c2.55 2.55 3.954 5.94 3.954 9.546s-1.404 6.996-3.954 9.546c-0.293 0.293-0.677 0.439-1.061 0.439v0zM17.157 23.157c-0.384 0-0.768-0.146-1.061-0.439-0.586-0.586-0.586-1.535 0-2.121 2.534-2.534 2.534-6.658 0-9.192-0.586-0.586-0.586-1.536 0-2.121s1.535-0.586 2.121 0c3.704 3.704 3.704 9.731 0 13.435-0.293 0.293-0.677 0.439-1.061 0.439zM13 30c-0.26 0-0.516-0.102-0.707-0.293l-7.707-7.707h-3.586c-0.552 0-1-0.448-1-1v-10c0-0.552 0.448-1 1-1h3.586l7.707-7.707c0.286-0.286 0.716-0.372 1.090-0.217s0.617 0.519 0.617 0.924v26c0 0.404-0.244 0.769-0.617 0.924-0.124 0.051-0.254 0.076-0.383 0.076z"></path>
-
-			    <rect x="-1" y="0" width="33" height="32" mask="url(#volume-mask)" fill="url(#grad-1)" />
-			  </svg>
-
-			  <div class="volume-track">
-			    <span id="volume-indicator" class="volume-indicator"></span>
-			    <input type="hidden" name="volume" id="volume-input" />
-			  </div>
-			</div>
-		</div>
-		<script src="../js/volumeslider.js" type="text/javascript">	</script>
-
-	</header>
-
-	<div class="area"></div><nav class="main-menu">
-						<ul>
-						&nbsp;&nbsp;Account
-						</ul>
-            <ul class="profile">
+    <header class="banner">
+        <div class="bannertext">
+            <img src="../img/chatsmalllogo.png" alt="chatlogo" id="chatsmalllogo" />
+            <a href="" id="logo">ChatTube</a>
+            <img src="../img/volume.png" alt="volumeButton" id="BtnVolume" />
+            <div id="volume-slider">
+                <svg id="volume-icon" class="volume-icon" viewBox="-1 0 33 32">
+                  <defs>
+                     <mask id="circle-mask" x="-1" y="0" width="33" height="32">
+                        <circle cx="-1" cy="16" r="33" fill="white" id="circle-mask-shape" />
+                     </mask>
+                     <mask id="volume-mask" x="-1" y="0" width="33" height="32">
+                        <path d="M22.485 25.985c-0.384 0-0.768-0.146-1.061-0.439-0.586-0.586-0.586-1.535 0-2.121 4.094-4.094 4.094-10.755 0-14.849-0.586-0.586-0.586-1.536 0-2.121s1.536-0.586 2.121 0c2.55 2.55 3.954 5.94 3.954 9.546s-1.404 6.996-3.954 9.546c-0.293 0.293-0.677 0.439-1.061 0.439v0zM17.157 23.157c-0.384 0-0.768-0.146-1.061-0.439-0.586-0.586-0.586-1.535 0-2.121 2.534-2.534 2.534-6.658 0-9.192-0.586-0.586-0.586-1.536 0-2.121s1.535-0.586 2.121 0c3.704 3.704 3.704 9.731 0 13.435-0.293 0.293-0.677 0.439-1.061 0.439zM13 30c-0.26 0-0.516-0.102-0.707-0.293l-7.707-7.707h-3.586c-0.552 0-1-0.448-1-1v-10c0-0.552 0.448-1 1-1h3.586l7.707-7.707c0.286-0.286 0.716-0.372 1.090-0.217s0.617 0.519 0.617 0.924v26c0 0.404-0.244 0.769-0.617 0.924-0.124 0.051-0.254 0.076-0.383 0.076z" fill="white" mask="url(#circle-mask)"></path>
+                     </mask>
+                     <linearGradient id="grad-1" x1="0" x2="1" y1="0" y2="0">
+                        <stop offset="20%" stop-color="#9a88aa" />
+                        <stop offset="100%" stop-color="#6e33a5" />
+                     </linearGradient>
+                  </defs>
+                  <path class="volume-icon-bg" fill="#cbc8ce" d="M22.485 25.985c-0.384 0-0.768-0.146-1.061-0.439-0.586-0.586-0.586-1.535 0-2.121 4.094-4.094 4.094-10.755 0-14.849-0.586-0.586-0.586-1.536 0-2.121s1.536-0.586 2.121 0c2.55 2.55 3.954 5.94 3.954 9.546s-1.404 6.996-3.954 9.546c-0.293 0.293-0.677 0.439-1.061 0.439v0zM17.157 23.157c-0.384 0-0.768-0.146-1.061-0.439-0.586-0.586-0.586-1.535 0-2.121 2.534-2.534 2.534-6.658 0-9.192-0.586-0.586-0.586-1.536 0-2.121s1.535-0.586 2.121 0c3.704 3.704 3.704 9.731 0 13.435-0.293 0.293-0.677 0.439-1.061 0.439zM13 30c-0.26 0-0.516-0.102-0.707-0.293l-7.707-7.707h-3.586c-0.552 0-1-0.448-1-1v-10c0-0.552 0.448-1 1-1h3.586l7.707-7.707c0.286-0.286 0.716-0.372 1.090-0.217s0.617 0.519 0.617 0.924v26c0 0.404-0.244 0.769-0.617 0.924-0.124 0.051-0.254 0.076-0.383 0.076z"></path>
+                  <rect x="-1" y="0" width="33" height="32" mask="url(#volume-mask)" fill="url(#grad-1)" />
+               </svg>
+                <div class="volume-track">
+                    <span id="volume-indicator" class="volume-indicator"></span>
+                    <input type="hidden" name="volume" id="volume-input" />
+                </div>
+            </div>
+        </div>
+        <script src="../js/volumeslider.js" type="text/javascript">
+        </script>
+    </header>
+    <div class="area"></div>
+    <nav class="main-menu">
+        <ul>
+            &nbsp;&nbsp;Account
+        </ul>
+        <ul class="profile">
+            <li>
+                <button>
+                  <a href="/chat/<%= user.id %>" id="profilelink">
+                     <i class="fa fa-cog fa-2x"></i>
+                     <span class="nav-text">
+                        <%= user.username%>
+                     </span>
+                  </a>
+               </button>
+            </li>
+        </ul>
+        <ul>
+            &nbsp;&nbsp;Friends
+        </ul>
+        <ul id="friendlists">
+            <% for(var i=0; i < friendlist.length; i++) { %>
                 <li>
-                	<button  id="profilelink">
-										<a href="/chat/<%= user.id %>">
-	                		<i class="fa fa-cog fa-2x"></i>
-	                        <span class="nav-text">
-	                           <%= user.username%>
-	                        </span>
-										</a>
-                	</button>
-
+                    <button class="friendlink" id="btn<%=friendlist[i]._id.toString()%>">
+                        <a href="/chat/<%= friendlist[i]._id %>">
+                           <i class="fa fa-circle <%= friendlist[i].online %>onlinestatus"></i>
+                           <img src="<%= friendlist[i].avatar %>" class="friendlistavatar"/>
+                           <span class="nav-text <%= friendlist[i].online %>online">
+                              <%= friendlist[i].username %>
+                           </span>
+                        </a>
+                     </button>
                 </li>
+                <% } %>
+        </ul>
+        <ul class="logout">
+            <li>
+                <button>
+               <a href="/logout" id="logoutlink">
+               <i class="fa fa-power-off fa-2x"></i>
+               <span class="nav-text">
+               Logout
+               </span>
+               </a>
+               </button>
+            </li>
+        </ul>
+    </nav>
+    <section class="section">
+        <!-- These elements are displayed as white info cards in the middle of the screen -->
+        <div class="connected">
+            <table class="avatarTable">
+                <tr class="hover08">
+                    <td>
+                        <div>
+                            <figure><img class="avatarSelectorImg selected" src="../img/avatar/256_1.png"></img>
+                            </figure>
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            <figure><img class="avatarSelectorImg" src="../img/avatar/256_2.png"></img>
+                            </figure>
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            <figure><img class="avatarSelectorImg" src="../img/avatar/256_3.png"></img>
+                            </figure>
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            <figure><img class="avatarSelectorImg" src="../img/avatar/256_4.png"></img>
+                            </figure>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="hover08">
+                    <td>
+                        <div>
+                            <figure><img class="avatarSelectorImg" src="../img/avatar/256_5.png"></img>
+                            </figure>
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            <figure><img class="avatarSelectorImg" src="../img/avatar/256_6.png"></img>
+                            </figure>
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            <figure><img class="avatarSelectorImg" src="../img/avatar/256_7.png"></img>
+                            </figure>
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            <figure><img class="avatarSelectorImg" src="../img/avatar/256_8.png"></img>
+                            </figure>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="hover08">
+                    <td>
+                        <div>
+                            <figure><img class="avatarSelectorImg" src="../img/avatar/256_9.png"></img>
+                            </figure>
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            <figure><img class="avatarSelectorImg" src="../img/avatar/256_10.png"></img>
+                            </figure>
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            <figure><img class="avatarSelectorImg" src="../img/avatar/256_11.png"></img>
+                            </figure>
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            <figure><img class="avatarSelectorImg" src="../img/avatar/256_12.png"></img>
+                            </figure>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="hover08">
+                    <td>
+                        <div>
+                            <figure><img class="avatarSelectorImg" src="../img/avatar/256_13.png"></img>
+                            </figure>
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            <figure><img class="avatarSelectorImg" src="../img/avatar/256_14.png"></img>
+                            </figure>
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            <figure><img class="avatarSelectorImg" src="../img/avatar/256_15.png"></img>
+                            </figure>
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            <figure><img class="avatarSelectorImg" src="../img/avatar/256_16.png"></img>
+                            </figure>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <div class="infoConnected">
+                <h2>Who are you?</h2>
+                <br/>
+                <form class="loginForm">
+                    <input type="text" id="yourName" placeholder="Your nick name" /><br/>
+                    <input type="text" id="yourEmail" placeholder="Your email address" /><br/>
+                    <input type="submit" id="yourEnter" value="ENTER" />
+                </form>
+            </div>
+        </div>
+        <div class="personinside">
+            <table class="avatarTable">
+                <tr class="hover08">
+                    <td>
+                        <div>
+                            <figure><img class="youravatarSelectorImg selected" src="../img/avatar/256_1.png"></img>
+                            </figure>
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            <figure><img class="youravatarSelectorImg" src="../img/avatar/256_2.png"></img>
+                            </figure>
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            <figure><img class="youravatarSelectorImg" src="../img/avatar/256_3.png"></img>
+                            </figure>
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            <figure><img class="youravatarSelectorImg" src="../img/avatar/256_4.png"></img>
+                            </figure>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="hover08">
+                    <td>
+                        <div>
+                            <figure><img class="youravatarSelectorImg" src="../img/avatar/256_5.png"></img>
+                            </figure>
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            <figure><img class="youravatarSelectorImg" src="../img/avatar/256_6.png"></img>
+                            </figure>
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            <figure><img class="youravatarSelectorImg" src="../img/avatar/256_7.png"></img>
+                            </figure>
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            <figure><img class="youravatarSelectorImg" src="../img/avatar/256_8.png"></img>
+                            </figure>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="hover08">
+                    <td>
+                        <div>
+                            <figure><img class="youravatarSelectorImg" src="../img/avatar/256_9.png"></img>
+                            </figure>
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            <figure><img class="youravatarSelectorImg" src="../img/avatar/256_10.png"></img>
+                            </figure>
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            <figure><img class="youravatarSelectorImg" src="../img/avatar/256_11.png"></img>
+                            </figure>
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            <figure><img class="youravatarSelectorImg" src="../img/avatar/256_12.png"></img>
+                            </figure>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="hover08">
+                    <td>
+                        <div>
+                            <figure><img class="youravatarSelectorImg" src="../img/avatar/256_13.png"></img>
+                            </figure>
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            <figure><img class="youravatarSelectorImg" src="../img/avatar/256_14.png"></img>
+                            </figure>
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            <figure><img class="youravatarSelectorImg" src="../img/avatar/256_15.png"></img>
+                            </figure>
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            <figure><img class="youravatarSelectorImg" src="../img/avatar/256_16.png"></img>
+                            </figure>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <div class="infoInside">
+                <h2>Chat with <span class="nickname-chat"></span></h2>
+                <br/>
+                <form class="loginForm">
+                    <input type="text" id="hisName" placeholder="Your nick name" /><br/>
+                    <input type="text" id="hisEmail" placeholder="Your email address" /><br/>
+                    <input type="submit" id="hisEnter" value="CHAT" />
+                </form>
+            </div>
+        </div>
+        <div class="invite-textfield">
+            <h2>Oops, there are no other people in this chat!</h2>
+            <h5>Invite a friend by sending them this URL</h5>
+            <div class="link">
+                <a title="Invite a friend" href="" id="link"></a>
+            </div>
+        </div>
+        <div class="errorMessage" tabindex="-1">
+            <span id='close' onclick='closeErrorMessage()'><i class="fa fa-times-circle" aria-hidden="true"></i></span>
+            <img src="../img/error.png" />
+            <h2><span id="errorMessageContent"></span></h2>
+        </div>
+        <div class="successMessage" tabindex="-1">
+            <span id='close' onclick='closeSuccessMessage()'><i class="fa fa-times-circle" aria-hidden="true"></i></span>
+            <img src="../img/success.png" />
+            <h2><span id="successMessageContent"></span></h2>
+        </div>
+        <div class="videoChatInvite">
+            <img src="../img/unnamed.jpg" id="topImage" />
+            <br/>
+            <h2><span class="nickname-chat"></span></h2>
+            <br/>
+            <div class="call-animation green">
+                <img class="img-circle" src="../img/videoCallAccept.png" alt="Accept" id="videoCallAccept" onclick="acceptCall(); return false;" width="135" />
+            </div>
+            <div class="call-animation red">
+                <img class="img-circle" src="../img/videoCallReject.png" alt="Reject" id="videoCallReject" onclick="rejectCall(); return false;" width="135" />
+            </div>
+        </div>
+        <div class="audioChatInvite">
+            <img src="../img/unnamed.jpg" id="topImage" />
+            <br/>
+            <h2><span class="nickname-chat"></span></h2>
+            <br/>
+            <div class="call-animation green">
+                <img class="img-circle" src="../img/videoCallAccept.png" alt="Accept" id="audioCallAccept" onclick="acceptAudioCall(); return false;" width="135" />
+            </div>
+            <div class="call-animation red">
+                <img class="img-circle" src="../img/videoCallReject.png" alt="Reject" id="audioCallReject" onclick="rejectAudioCall(); return false;" width="135" />
+            </div>
+        </div>
+        <div class="videoChatInviteWait">
+            <h2>Waiting for <span class="nickname-chat"></span> to pick up...</h2>
+            <br/>
+            <div class="call-animation red" id="videoCallCancel">
+                <img class="img-circle" src="../img/videoCallReject.png" alt="Cancel" onclick="cancelCall(); return false;" width="135" />
+            </div>
+        </div>
+        <div class="audioChatInviteWait">
+            <h2>Waiting for <span class="nickname-chat"></span> to pick up...</h2>
+            <br/>
+            <div class="call-animation red" id="audioCallCancel">
+                <img class="img-circle" src="../img/videoCallReject.png" alt="Cancel" onclick="cancelAudioCall(); return false;" width="135" />
+            </div>
+        </div>
+        <div class="left">
+            <img src="../img/unnamed.jpg" id="leftImage" />
+            <div class="info">
+                <h2><span class="nickname-left"></span> has left this chat.</h2>
+                <h5>Invite somebody else by sending them this page.</h5>
+            </div>
+        </div>
+        <div class="toomanypeople">
+            <h2>Oops, you can not join this chat!</h2>
+            <h5>There are already two people in it. Would you like to create a <a title="New Room" href="/create" id="room">new room</a>?</h5>
+        </div>
+        <div class="videoChatInviteReject">
+            <h2><span class="nickname-chat"></span> refused your call</h2>
+            <br/>
+        </div>
+        <div class="videoChatInviteCancelled">
+            <h2><span class="nickname-chat"></span> cancelled the call</h2>
+            <br/>
+        </div>
+        <div class="videoChatInviteOnwerCancelled">
+            <h2>You cancelled your call</h2>
+            <br/>
+        </div>
+        <div class="audioChatInviteReject">
+            <h2><span class="nickname-chat"></span> refused your call</h2>
+            <br/>
+        </div>
+        <div class="audioChatInviteCancelled">
+            <h2><span class="nickname-chat"></span> cancelled the call</h2>
+            <br/>
+        </div>
+        <div class="audioChatInviteOnwerCancelled">
+            <h2>You cancelled your call</h2>
+            <br/>
+        </div>
+        <div class="nomessages">
+            <img src="../img/unnamed.jpg" id="noMessagesImage" />
+            <div class="info">
+                <h2>You are chatting with <span class="nickname-chat"></span>.</h2>
+                <h5>Send them a message from the form below!</h5>
+            </div>
+        </div>
+        <div id="videoChatArea">
+            <!--<div id="videoCanvas">
+            <video id="camera" autoplay></video>
+            <audio id="mic" autoplay></audio>
+            <canvas id="photo"></canvas>
+            </div>
+            <div id="buttons">
+            <a href="#" class="push_button blue" id="snap">Snap</a>
+            <a href="#" class="push_button blue" id="send">Send</a>
+            </div>
+            <div id="incoming">
+            <div id="trail"></div>
+            </div>
+            </div>-->
+            <div>
+                <input type="button" id="start" onclick="start(true)" value="Start Video"></input>
+            </div>
+            <div id="videoControlArea">
+                <video id="localVideo" autoplay muted></video>
+                <video id="remoteVideo" autoplay></video>
+                <div id="videoTimer">
+                    <span id="minutes"></span>:<span id="seconds"></span>
+                </div>
+                <div id="videoControlPanel">
+                    <img class="img-circle" src="../img/unMutedMic.png" alt="MuteCall" id="VideoCallMute" onclick="unmuteCall(); return false;" width="135" />
+                    <img class="img-circle" src="../img/mutedMic.png" alt="UnMuteCall" id="VideoCallUnMute" onclick="muteCall(); return false;" width="135" />
+                    <img class="img-circle" src="../img/hangup.png" alt="EndCall" id="videoCallEnd" onclick="endCall(); return false;" width="135" />
+                    <img class="img-circle" src="../img/videoOff.png" alt="TurnOffMyCamera" id="VideoOff" onclick="turnOffVideo(); return false;" width="135" />
+                    <img class="img-circle" src="../img/videoOn.png" alt="TurnOnMyCamera" id="VideoOn" onclick="turnOnVideo(); return false;" width="135" />
+                </div>
+            </div>
+        </div>
+        </div>
+        <div id="audioChatArea">
+            <div>
+                <input type="button" id="startAudio" onclick="startAudio(true)" value="Start Audio"></input>
+            </div>
+            <div id="audioControlArea">
+                <audio id="localAudio" autoplay muted></audio>
+                <audio id="remoteAudio" autoplay></audio>
+                <div id="videoTimer">
+                    <span id="minutes"></span>:<span id="seconds"></span>
+                </div>
+                <div id="audioControlPanel">
+                    <img class="img-circle" src="../img/unMutedMic.png" alt="MuteAudioCall" id="AudioCallMute" onclick="unmuteAudioCall(); return false;" width="135" />
+                    <img class="img-circle" src="../img/mutedMic.png" alt="UnMuteAudioCall" id="AudioCallUnMute" onclick="muteAudioCall(); return false;" width="135" />
+                    <img class="img-circle" src="../img/hangup.png" alt="EndAudioCall" id="AudioCallEnd" onclick="endAudioCall(); return false;" width="135" />
+                </div>
+            </div>
+        </div>
+        <div class="chatscreen">
+            <ul class="chats">
+                <!-- The chat messages will go here -->
             </ul>
-						<ul>
-						&nbsp;&nbsp;Friends
-						</ul>
-						<ul id="friendlist">
-						<% for(var i=0; i < friendlist.length; i++) { %>
-							<li>
-								<button  id="friendlink">
-									<a href="/chat/<%= user.friends[i].id %>">
-  										<i class="fa fa-circle <%= friendlist[i].online %>onlinestatus"></i>
-											<img src="<%= friendlist[i].avatar %>" class="friendlistavatar"/>
-											<span class="nav-text <%= friendlist[i].online %>online">
-												 <%= friendlist[i].username %>
-											</span>
-									</a>
-								</button>
-							</li>
-						<% } %>
-						</ul>
-
-            <ul class="logout">
-                <li>
-									 <button  id="friendlink">
-	                   <a href="/logout">
-	                         <i class="fa fa-power-off fa-2x"></i>
-	                        <span class="nav-text">
-	                            Logout
-	                        </span>
-	                    </a>
-										</button>
-                </li>
-            </ul>
-        </nav>
-
-	<section class="section">
-
-		<!-- These elements are displayed as white info cards in the middle of the screen -->
-
-		<div class="connected">
-
-			<table class="avatarTable">
-				<tr class="hover08">
-					<td><div ><figure><img class="avatarSelectorImg selected" src = "../img/avatar/256_1.png"></img></figure></div></td>
-					<td><div ><figure><img class="avatarSelectorImg" src = "../img/avatar/256_2.png"></img></figure></div></td>
-					<td><div ><figure><img class="avatarSelectorImg" src = "../img/avatar/256_3.png"></img></figure></div></td>
-					<td><div ><figure><img class="avatarSelectorImg" src = "../img/avatar/256_4.png"></img></figure></div></td>
-				</tr>
-				<tr class="hover08">
-					<td><div><figure><img class="avatarSelectorImg" src = "../img/avatar/256_5.png"></img></figure></div></td>
-					<td><div><figure><img class="avatarSelectorImg" src = "../img/avatar/256_6.png"></img></figure></div></td>
-					<td><div><figure><img class="avatarSelectorImg" src = "../img/avatar/256_7.png"></img></figure></div></td>
-					<td><div><figure><img class="avatarSelectorImg" src = "../img/avatar/256_8.png"></img></figure></div></td>
-				</tr>
-				<tr class="hover08">
-					<td><div><figure><img class="avatarSelectorImg" src = "../img/avatar/256_9.png"></img></figure></div></td>
-					<td><div><figure><img class="avatarSelectorImg" src = "../img/avatar/256_10.png"></img></figure></div></td>
-					<td><div><figure><img class="avatarSelectorImg" src = "../img/avatar/256_11.png"></img></figure></div></td>
-					<td><div><figure><img class="avatarSelectorImg" src = "../img/avatar/256_12.png"></img></figure></div></td>
-				</tr>
-				<tr class="hover08">
-					<td><div><figure><img class="avatarSelectorImg" src = "../img/avatar/256_13.png"></img></figure></div></td>
-					<td><div><figure><img class="avatarSelectorImg" src = "../img/avatar/256_14.png"></img></figure></div></td>
-					<td><div><figure><img class="avatarSelectorImg" src = "../img/avatar/256_15.png"></img></figure></div></td>
-					<td><div><figure><img class="avatarSelectorImg" src = "../img/avatar/256_16.png"></img></figure></div></td>
-				</tr>
-			</table>
-
-			<div class="infoConnected">
-				<h2>Who are you?</h2>
-				<br/>
-
-				<form class="loginForm">
-					<input type="text" id="yourName" placeholder="Your nick name" /><br/>
-					<input type="text" id="yourEmail" placeholder="Your email address" /><br/>
-					<input type="submit" id="yourEnter" value="ENTER" />
-				</form>
-
-			</div>
-
-		</div>
-
-		<div class="personinside">
-			<table class="avatarTable">
-				<tr class="hover08">
-					<td><div ><figure><img class="youravatarSelectorImg selected" src = "../img/avatar/256_1.png"></img></figure></div></td>
-					<td><div ><figure><img class="youravatarSelectorImg" src = "../img/avatar/256_2.png"></img></figure></div></td>
-					<td><div ><figure><img class="youravatarSelectorImg" src = "../img/avatar/256_3.png"></img></figure></div></td>
-					<td><div ><figure><img class="youravatarSelectorImg" src = "../img/avatar/256_4.png"></img></figure></div></td>
-				</tr>
-				<tr class="hover08">
-					<td><div><figure><img class="youravatarSelectorImg" src = "../img/avatar/256_5.png"></img></figure></div></td>
-					<td><div><figure><img class="youravatarSelectorImg" src = "../img/avatar/256_6.png"></img></figure></div></td>
-					<td><div><figure><img class="youravatarSelectorImg" src = "../img/avatar/256_7.png"></img></figure></div></td>
-					<td><div><figure><img class="youravatarSelectorImg" src = "../img/avatar/256_8.png"></img></figure></div></td>
-				</tr>
-				<tr class="hover08">
-					<td><div><figure><img class="youravatarSelectorImg" src = "../img/avatar/256_9.png"></img></figure></div></td>
-					<td><div><figure><img class="youravatarSelectorImg" src = "../img/avatar/256_10.png"></img></figure></div></td>
-					<td><div><figure><img class="youravatarSelectorImg" src = "../img/avatar/256_11.png"></img></figure></div></td>
-					<td><div><figure><img class="youravatarSelectorImg" src = "../img/avatar/256_12.png"></img></figure></div></td>
-				</tr>
-				<tr class="hover08">
-					<td><div><figure><img class="youravatarSelectorImg" src = "../img/avatar/256_13.png"></img></figure></div></td>
-					<td><div><figure><img class="youravatarSelectorImg" src = "../img/avatar/256_14.png"></img></figure></div></td>
-					<td><div><figure><img class="youravatarSelectorImg" src = "../img/avatar/256_15.png"></img></figure></div></td>
-					<td><div><figure><img class="youravatarSelectorImg" src = "../img/avatar/256_16.png"></img></figure></div></td>
-				</tr>
-			</table>
-			<div class="infoInside">
-				<h2>Chat with <span class="nickname-chat"></span></h2>
-				<br/>
-
-				<form class="loginForm">
-					<input type="text" id="hisName" placeholder="Your nick name" /><br/>
-					<input type="text" id="hisEmail" placeholder="Your email address" /><br/>
-					<input type="submit" id="hisEnter" value="CHAT" />
-				</form>
-
-			</div>
-
-		</div>
-
-		<div class="invite-textfield">
-
-			<h2>Oops, there are no other people in this chat!</h2>
-			<h5>Invite a friend by sending them this URL</h5>
-
-			<div class="link">
-				<a title="Invite a friend" href="" id="link"></a>
-			</div>
-
-		</div>
-
-		<div class="errorMessage" tabindex="-1">
-			<span id='close' onclick='closeErrorMessage()'><i class="fa fa-times-circle" aria-hidden="true"></i></span>
-			<img src="../img/error.png"  />
-			<h2><span id="errorMessageContent"></span></h2>
-		</div>
-
-		<div class="successMessage" tabindex="-1">
-			<span id='close' onclick='closeSuccessMessage()'><i class="fa fa-times-circle" aria-hidden="true"></i></span>
-			<img src="../img/success.png"  />
-			<h2><span id="successMessageContent"></span></h2>
-		</div>
-
-
-		<div class="videoChatInvite">
-			<img src="../img/unnamed.jpg" id="topImage" />
-			<br/>
-			<h2><span class="nickname-chat"></span></h2>
-			<br/>
-			<div class="call-animation green">
-				<img class="img-circle" src="../img/videoCallAccept.png" alt="Accept" id="videoCallAccept" onclick="acceptCall(); return false;" width="135"/>
-			</div>
-			<div class="call-animation red" >
-				<img class="img-circle" src="../img/videoCallReject.png" alt="Reject" id="videoCallReject" onclick="rejectCall(); return false;" width="135"/>
-			</div>
-		</div>
-
-		<div class="audioChatInvite">
-			<img src="../img/unnamed.jpg" id="topImage" />
-			<br/>
-			<h2><span class="nickname-chat"></span></h2>
-			<br/>
-			<div class="call-animation green">
-				<img class="img-circle" src="../img/videoCallAccept.png" alt="Accept" id="audioCallAccept" onclick="acceptAudioCall(); return false;" width="135"/>
-			</div>
-			<div class="call-animation red" >
-				<img class="img-circle" src="../img/videoCallReject.png" alt="Reject" id="audioCallReject" onclick="rejectAudioCall(); return false;" width="135"/>
-			</div>
-		</div>
-
-		<div class="videoChatInviteWait">
-			<h2>Waiting for <span class="nickname-chat"></span> to pick up...</h2>
-			<br/>
-			<div class="call-animation red" id="videoCallCancel">
-				<img class="img-circle" src="../img/videoCallReject.png" alt="Cancel"  onclick="cancelCall(); return false;" width="135"/>
-			</div>
-		</div>
-
-		<div class="audioChatInviteWait">
-			<h2>Waiting for <span class="nickname-chat"></span> to pick up...</h2>
-			<br/>
-			<div class="call-animation red" id="audioCallCancel">
-				<img class="img-circle" src="../img/videoCallReject.png" alt="Cancel"  onclick="cancelAudioCall(); return false;" width="135"/>
-			</div>
-		</div>
-
-		<div class="left">
-
-			<img src="../img/unnamed.jpg" id="leftImage" />
-
-			<div class="info">
-				<h2><span class="nickname-left"></span> has left this chat.</h2>
-				<h5>Invite somebody else by sending them this page.</h5>
-			</div>
-
-		</div>
-
-		<div class="toomanypeople">
-
-			<h2>Oops, you can not join this chat!</h2>
-			<h5>There are already two people in it. Would you like to create a <a title="New Room" href="/create" id="room">new room</a>?</h5>
-
-		</div>
-
-		<div class="videoChatInviteReject">
-			<h2><span class="nickname-chat"></span> refused your call</h2>
-			<br/>
-		</div>
-
-		<div class="videoChatInviteCancelled">
-			<h2><span class="nickname-chat"></span> cancelled the call</h2>
-			<br/>
-		</div>
-
-		<div class="videoChatInviteOnwerCancelled">
-			<h2>You cancelled your call</h2>
-			<br/>
-		</div>
-
-		<div class="audioChatInviteReject">
-			<h2><span class="nickname-chat"></span> refused your call</h2>
-			<br/>
-		</div>
-
-		<div class="audioChatInviteCancelled">
-			<h2><span class="nickname-chat"></span> cancelled the call</h2>
-			<br/>
-		</div>
-
-		<div class="audioChatInviteOnwerCancelled">
-			<h2>You cancelled your call</h2>
-			<br/>
-		</div>
-
-
-		<div class="nomessages">
-
-			<img src="../img/unnamed.jpg" id="noMessagesImage" />
-
-			<div class="info">
-				<h2>You are chatting with <span class="nickname-chat"></span>.</h2>
-				<h5>Send them a message from the form below!</h5>
-			</div>
-
-		</div>
-
-		<div id="videoChatArea" >
-			<!--<div id="videoCanvas">
-				<video id="camera" autoplay></video>
-				<audio id="mic" autoplay></audio>
-				<canvas id="photo"></canvas>
-			</div>
-			<div id="buttons">
-				<a href="#" class="push_button blue" id="snap">Snap</a>
-				<a href="#" class="push_button blue" id="send">Send</a>
-			</div>
-			<div id="incoming">
-				<div id="trail"></div>
-			</div>
-		</div>-->
-			<div>
-				<input type="button" id="start" onclick="start(true)" value="Start Video"></input>
-			</div>
-			<div id="videoControlArea">
-				<video id="localVideo" autoplay muted></video>
-    		<video id="remoteVideo" autoplay></video>
-				<div id="videoTimer">
-					<span id="minutes"></span>:<span id="seconds"></span>
-				</div>
-				<div id="videoControlPanel">
-						<img class="img-circle" src="../img/unMutedMic.png" alt="MuteCall" id="VideoCallMute" onclick="unmuteCall(); return false;" width="135"/>
-						<img class="img-circle" src="../img/mutedMic.png" alt="UnMuteCall" id="VideoCallUnMute" onclick="muteCall(); return false;" width="135"/>
-						<img class="img-circle" src="../img/hangup.png" alt="EndCall" id="videoCallEnd" onclick="endCall(); return false;" width="135"/>
-						<img class="img-circle" src="../img/videoOff.png" alt="TurnOffMyCamera" id="VideoOff" onclick="turnOffVideo(); return false;" width="135"/>
-						<img class="img-circle" src="../img/videoOn.png" alt="TurnOnMyCamera" id="VideoOn" onclick="turnOnVideo(); return false;" width="135"/>
-				</div>
-			</div>
-    </div>
-	</div>
-	<div id="audioChatArea" >
-	<div>
-		<input type="button" id="startAudio" onclick="startAudio(true)" value="Start Audio"></input>
-	</div>
-		<div id="audioControlArea">
-			<audio id="localAudio" autoplay muted></audio>
-			<audio id="remoteAudio" autoplay></audio>
-			<div id="videoTimer">
-				<span id="minutes"></span>:<span id="seconds"></span>
-			</div>
-			<div id="audioControlPanel">
-					<img class="img-circle" src="../img/unMutedMic.png" alt="MuteAudioCall" id="AudioCallMute" onclick="unmuteAudioCall(); return false;" width="135"/>
-					<img class="img-circle" src="../img/mutedMic.png" alt="UnMuteAudioCall" id="AudioCallUnMute" onclick="muteAudioCall(); return false;" width="135"/>
-					<img class="img-circle" src="../img/hangup.png" alt="EndAudioCall" id="AudioCallEnd" onclick="endAudioCall(); return false;" width="135"/>
-			</div>
-		</div>
-	</div>
-		<div class="chatscreen">
-			<ul class="chats">
-				<!-- The chat messages will go here -->
-			</ul>
-			<canvas id="fireworkcanvas">
-			</canvas>
-		</div>
-
-		<div class="profileSection">
-		  <br/>
-			<div class="profileHeader">
-				<img id="profileImg" src="../img/profile.png"></img>				
-				<div id="profileTitle"><%=user.username%> Profile</div>
-			</div>
-
-			<hr/>
-			<div class="space2"></div>
-			<h1>User Info</h1>
-
-			<div class="space2"></div>
-			<form id="profileInfoUpdateForm">
-				<input type="text" name="email" id="emailUpdate" placeholder="E-mail" value="<%=user.email%>" required="">
-				<input type="text" name="username" id="usernameUpdate" placeholder="Username" value="<%=user.username%>" required="">
-				<div class="tp">
-					<input type="submit" class="profileButton" value="Save">
-				</div>
-			</form>
-			<div class="space"></div>
-			<h1>Change Password</h1>
-			<div class="space2"></div>
-			<form id="passwordUpdateForm">
-				<input type="password" name="password" id="originalpwdUpdate"  placeholder="Password" value="<%=user.password%>" required="">
-				<input type="password" name="newpassword" id="newpwdUpdate"  placeholder="New Password"  required="">
-				<input type="password" name="newpasswordConf" id="newpwdconfirmUpdate" placeholder="Confirm New Password" oninput="passwordConfirm(this)"  
-				required="">
-				<div class="tp">
-					<input type="submit" class="profileButton" value="Save">
-				</div>
-			</form>
-			<div class="space"></div>
-			<h3>Friends</h3>
-			<div class="space2"></div>
-			<table class="friendTable">
-				<% for(var i=0; i < user.friends.length; i++) { %>
-				   <tr id="tr_<%= user.friends[i].id %>">
-				     <td><%= user.friends[i].username %></td>
-						 <td class="deleteColumn"><i class="fa fa-trash" id="deleteFriend" onclick="deletefriend('<%=user.friends[i].id%>'); return false;" aria-hidden="true"></i></td>
-				   </tr>
-				<% } %>
-			</table>
-			<div class="space"></div>
-			<h3>Add Friend</h3>
-			<div class="space2"></div>
-			<form id="friendForm">
-				<input type="email" name="friendEmail" id="friendEmail" placeholder="friend's E-mail" required="">
-				<div class="tp">
-					<button class="profileButton" >Add</button>
-				</div>
-			</form>
-			<div class="space"></div>
-			<button  id="profilecloselink">&#8249;</button>
-
-		</div>
-
-
-		<audio id="audio" src="../audio/message.mp3" autostart="false" ></audio>
-		<audio id="videoCallaudio" src="../audio/videocall.mp3" autostart="false" ></audio>
-
-	<footer>
-		<form id="chatform">
-			<div id = "container">
-				<div class="action">
-					<button class="chatButton icon first" title="Voice to Text" id="btnMicrophone"><i class="fa fa-microphone" id="iMicrophone"></i></button>
-					<button class="chatButton icon" title="Audio Chat" id="btnAudioChat"><i class="fa fa-phone" id="iAudioChat"></i></button>
-					<button class="chatButton icon" title="Video Chat" id="btnVideoChat"><i class="fa fa-video-camera" id="iVideoChat"></i></button>
-					<button class="chatButton icon" title="Email Chat Transcript" id="btnEmail"><i class="fa fa-envelope-o" id="iEmail"></i></button>
-					<button class="chatButton icon last" title="Download Transcript" id="btnDownload"><i class="fa fa-download" id="iDownload"></i></button>
-					<div class="actionMenu">
-						<img src="../img/menu.png"/>
-					</div>
-				</div>
-				<p class="lead emoji-picker-container" style="display:inline-block; width:500px; float:left">
-						<textarea class="form-control textarea-control" rows="2" placeholder="Ctrl + Enter to submit" id="text-input" data-emojiable="true" data-emoji-input="unicode"></textarea>
-				</p>
-				<div class="send-button">
-				 <span class="text">send</span>
-				  <span class="icon-wrapper">
-				    <span class="icon-1 ion-paper-airplane"></span>
-				        <span class="icon-2 ion-checkmark"></span>
-				  </span>
-				</div>
-				</div>
-		</form>
-	</footer>
-
-
-	<!-- Begin emoji-picker JavaScript -->
-	<script src="../js/config.js"></script>
-	<script src="../js/util.js"></script>
-	<script src="../js/jquery.emojiarea.js"></script>
-	<script src="../js/emoji-picker.js"></script>
-	<!-- End emoji-picker JavaScript -->
-
-	<script>
-		$(function() {
-			// Initializes and creates emoji set from sprite sheet
-			window.emojiPicker = new EmojiPicker({
-				emojiable_selector: '[data-emojiable=true]',
-				assetsPath: '../img/',
-				popupButtonClasses: 'fa fa-smile-o'
-			});
-			// Finds all elements with `emojiable_selector` and converts them to rich emoji input fields
-			// You may want to delay this step if you have dynamically created input fields that appear later in the loading process
-			// It can be called as many times as necessary; previously converted input fields will not be converted again
-			window.emojiPicker.discover();
-		});
-
-		$('#profilecloselink').click(function(){
-
-			$('.profileSection').fadeOut(1200);
-				$(".section").children().css('display','none');
-				
-				$("footer").css('display', 'block');
-				$('.main-menu').css('bottom', '150px');
-				$(".chatscreen").css('display','block');
-
-		});
-
-
-		$('#btnVideoChat').click(function(){
-			//$('.videoChatInviteWait').fadeIn(1200);
-			socket.emit("videoChat", {senderId: socket.io.engine.id});
-		});
-
-		$('#btnAudioChat').click(function(){
-			//$('.videoChatInviteWait').fadeIn(1200);
-			socket.emit("audioChat", {senderId: socket.io.engine.id});
-		});
-
-
-		$('#btnDownload').click(function(){
-			generate();
-		});
-
-		$('#btnEmail').click(function(){
-			generateHtml();
-		});
-
-		function acceptCall(){
-			var sound = document.getElementById("videoCallaudio");
-			//sound.volume = (volume.value)/100.0;
-	    	sound.pause();
-			socket.emit("videoChatJoined", {senderId: socket.io.engine.id});
-
-		};
-
-		function cancelCall(){
-			socket.emit("videoChatCancelled", {senderId: socket.io.engine.id});
-		}
-
-		function rejectCall(){
-			var sound = document.getElementById("videoCallaudio");
-			//sound.volume = (volume.value)/100.0;
-	    sound.pause();
-			socket.emit("videoChatRejected", {senderId: socket.io.engine.id});
-		};
-
-		function acceptAudioCall(){
-			var sound = document.getElementById("videoCallaudio");
-			//sound.volume = (volume.value)/100.0;
-	    	sound.pause();
-			socket.emit("audioChatJoined", {senderId: socket.io.engine.id});
-
-		};
-
-		function cancelAudioCall(){
-			socket.emit("audioChatCancelled", {senderId: socket.io.engine.id});
-		}
-
-		function rejectAudioCall(){
-			var sound = document.getElementById("videoCallaudio");
-			//sound.volume = (volume.value)/100.0;
-	    	sound.pause();
-			socket.emit("audioChatRejected", {senderId: socket.io.engine.id});
-		};
-
-		function turnOffVideo(){
-
-			$('#VideoOn').toggle();
-			$('#VideoOff').toggle();
-			localStream.getVideoTracks()[0].enabled = false;
-		}
-
-		function turnOnVideo(){
-
-			$('#VideoOn').toggle();
-			$('#VideoOff').toggle();
-			localStream.getVideoTracks()[0].enabled = true;
-		}
-
-		function muteCall(){
-			$('#VideoCallMute').toggle();
-			$('#VideoCallUnMute').toggle();
-
-			localStream.getAudioTracks()[0].enabled = false;
-		}
-
-		function unmuteCall(){
-			$('#VideoCallMute').toggle();
-			$('#VideoCallUnMute').toggle();
-
-			localStream.getAudioTracks()[0].enabled = true;
-		}
-		function muteAudioCall(){
-			$('#AudioCallMute').toggle();
-			$('#AudioCallUnMute').toggle();
-
-			localStream.getAudioTracks()[0].enabled = false;
-		}
-
-		function unmuteAudioCall(){
-			$('#AudioCallMute').toggle();
-			$('#AudioCallUnMute').toggle();
-
-			localStream.getAudioTracks()[0].enabled = true;
-		}
-
-		$(".actionMenu").mouseover(function(){
-         $(".icon").css("display", "");
-     	});
-
-
-		$(() => {
-		    var $sendBtn = $('.send-button'),
-		            $iWrapper = $('.icon-wrapper'),
-		            $i1 = $('.icon-1'),
-		            $i2 = $('.icon-2');
-
-		    function animationEvent() {
-		        var t,
-		                el = document.createElement('fakeelement');
-
-		        var animations = {
-		            animation: 'animationend',
-		            OAnimation: 'oAnimationEnd',
-		            MozAnimation: 'animationend',
-		            WebkitAnimation: 'webkitAnimationEnd'
-		        };
-
-		        for (t in animations) {
-		            if (el.style[t] !== undefined) {
-		                return animations[t];
-		            }
-		        }
-		    }
-
-		    $sendBtn.on('click', e => {
-		        $iWrapper.addClass('icon-wrapper-animation');
-		        $sendBtn.addClass('clicked');
-		        $i1.delay(900);
-		        $i1.fadeTo(300, 0);
-		        $i2.delay(900);
-		        $i2.fadeTo(300, 1);
-		    });
-
-		    $sendBtn.on(animationEvent(), e => {
-		        if (e.originalEvent.animationName == 'input-shadow') {
-		            $sendBtn.removeClass('clicked');
-		        }
-		    });
-
-		    $iWrapper.on(animationEvent(), e => {
-		        if (e.originalEvent.animationName == 'icon-animation') {
-		            $iWrapper.removeClass('icon-wrapper-animation');
-		            setTimeout(reset, 1200);
-		        }
-		    });
-
-		    function reset() {
-		        $i1.fadeTo(250, 1);
-		        $i2.fadeTo(250, 0);
-		        $iWrapper.css('color', 'white');
-		    }
-
-
-		    $('#BtnVolume').on('click', e => {
-		    	if ($('#volume-slider').css('display') == 'none')
-			    	$('#volume-slider').css('display', 'flex');
-			    else
-			    	$('#volume-slider').css('display', 'none');
-		    });
-		}); // end of document ready
-
-		$('.send-button').click(function() {$('#chatform').submit()});
-
-		$('#friendForm').submit(function(ev)
-		{
-			ev.preventDefault();
-
-			var email = $('#friendEmail').val();
-			var userId = '<%= user._id%>';
-			socket.emit('addFriend', {friendEmail: email, userId: userId});
-		});
-
-		function closeSuccessMessage()
-		{
-			$('.successMessage').fadeOut(800);
-		}
-
-		function closeErrorMessage()
-		{
-		$('.errorMessage').fadeOut(800);
-		}
-
-		$(".errorMessage").on('blur',function(){
-		    $(this).fadeOut(800);
-		});
-
-		$(".successMessage").on('blur',function(){
-		    $(this).fadeOut(800);
-		});
-
-		function deletefriend(friendId)
-		{
-			var userId = '<%= user._id%>';
-			socket.emit('deleteFriend', {friendId: friendId, userId: userId});
-		}
-
-		$('#profileInfoUpdateForm').submit(function(ev) {
-		    ev.preventDefault(); // to stop the form from submitting
-		    var email = $('#emailUpdate').val();
-			var userId = '<%= user._id%>';
-			var username = $('#usernameUpdate').val();
-		    
-		   	socket.emit('saveProfile', {email:email, username:username, userId: userId}); 
-		});
-
-		$('#passwordUpdateForm').submit(function(ev) {
-		    ev.preventDefault(); // to stop the form from submitting
-			var userId = '<%= user._id%>';
-			var originalpwd = $('#originalpwdUpdate').val();
-			var newpwdUpdate = $('#newpwdUpdate').val();
-			var newpwdConfirm = $('#newpwdconfirmUpdate').val();
-		    
-		   	socket.emit('savePassword', {oldpwd:originalpwd, newpwd:newpwdUpdate, newpwdConfirm: newpwdConfirm, userId: userId}); 
-		});
-
-		function passwordConfirm(input) {
-			if (input.value != document.getElementById('newpwdUpdate').value) {
-				input.setCustomValidity('The two passwords must match.');
-			} else {
-				input.setCustomValidity('');
-			}
-		}
-			
-
-	</script>
-
-
-	<script src="../js/moment.min.js"></script>
-	<script src="/socket.io/socket.io.js"></script>
-	<script type="text/javascript">
-    var friendObj = <%- JSON.stringify(friend) %>
-
-	  var userObj = <%- JSON.stringify(user) %>
-
-		var chatObj = <%- JSON.stringify(chat) %>
-
-		var messagesObj = <%- JSON.stringify(messages) %>
-
-		var friendlistObj = <%- JSON.stringify(friendlist) %>
-
-
-  </script>
-	<script src="../js/chat.js"></script>
-	<script src="../js/voiceinput.js"></script>
-	<script src="../js/fireworks.js"></script>
-	<script src="../js/adapter.js"></script>
-	<!--<script src="../js/videoChat.js"></script>-->
-	<script src="../js/VideoAudioChat.js"></script>
-	<script src="../js/AudioChat.js"></script>
+            <canvas id="fireworkcanvas">
+         </canvas>
+        </div>
+        <div class="profileSection">
+            <br/>
+            <div class="profileHeader">
+                <img id="profileImg" src="../img/profile.png"></img>
+                <div id="profileTitle">
+                    <%=user.username%> Profile</div>
+            </div>
+            <hr/>
+            <div class="space2"></div>
+            <h1>User Info</h1>
+            <div class="space2"></div>
+            <form id="profileInfoUpdateForm">
+                <input type="text" name="email" id="emailUpdate" placeholder="E-mail" value="<%=user.email%>" required="">
+                <input type="text" name="username" id="usernameUpdate" placeholder="Username" value="<%=user.username%>" required="">
+                <div class="tp">
+                    <input type="submit" class="profileButton" value="Save">
+                </div>
+            </form>
+            <div class="space"></div>
+            <h1>Change Password</h1>
+            <div class="space2"></div>
+            <form id="passwordUpdateForm">
+                <input type="password" name="password" id="originalpwdUpdate" placeholder="Password" value="<%=user.password%>" required="">
+                <input type="password" name="newpassword" id="newpwdUpdate" placeholder="New Password" required="">
+                <input type="password" name="newpasswordConf" id="newpwdconfirmUpdate" placeholder="Confirm New Password" oninput="passwordConfirm(this)" required="">
+                <div class="tp">
+                    <input type="submit" class="profileButton" value="Save">
+                </div>
+            </form>
+            <div class="space"></div>
+            <h3>Friends</h3>
+            <div class="space2"></div>
+            <table class="friendTable">
+                <% for(var i=0; i < user.friends.length; i++) { %>
+                    <tr id="tr_<%= user.friends[i].id %>">
+                        <td>
+                            <%= user.friends[i].username %>
+                        </td>
+                        <td class="deleteColumn"><i class="fa fa-trash" id="deleteFriend" onclick="deletefriend('<%=user.friends[i].id%>'); return false;" aria-hidden="true"></i></td>
+                    </tr>
+                    <% } %>
+            </table>
+            <div class="space"></div>
+            <h3>Add Friend</h3>
+            <div class="space2"></div>
+            <form id="friendForm">
+                <input type="email" name="friendEmail" id="friendEmail" placeholder="friend's E-mail" required="">
+                <div class="tp">
+                    <button class="profileButton">Add</button>
+                </div>
+            </form>
+            <div class="space"></div>
+            <button id="profilecloselink">&#8249;</button>
+        </div>
+        <audio id="audio" src="../audio/message.mp3" autostart="false"></audio>
+        <audio id="videoCallaudio" src="../audio/videocall.mp3" autostart="false"></audio>
+        <footer>
+            <form id="chatform">
+                <div id="container">
+                    <div class="action">
+                        <button class="chatButton icon first" title="Voice to Text" id="btnMicrophone"><i class="fa fa-microphone" id="iMicrophone"></i></button>
+                        <button class="chatButton icon" title="Audio Chat" id="btnAudioChat"><i class="fa fa-phone" id="iAudioChat"></i></button>
+                        <button class="chatButton icon" title="Video Chat" id="btnVideoChat"><i class="fa fa-video-camera" id="iVideoChat"></i></button>
+                        <button class="chatButton icon" title="Email Chat Transcript" id="btnEmail"><i class="fa fa-envelope-o" id="iEmail"></i></button>
+                        <button class="chatButton icon last" title="Download Transcript" id="btnDownload"><i class="fa fa-download" id="iDownload"></i></button>
+                        <div class="actionMenu">
+                            <img src="../img/menu.png" />
+                        </div>
+                    </div>
+                    <p class="lead emoji-picker-container" style="display:inline-block; width:500px; float:left">
+                        <textarea class="form-control textarea-control" rows="2" placeholder="Ctrl + Enter to submit" id="text-input" data-emojiable="true" data-emoji-input="unicode"></textarea>
+                    </p>
+                    <div class="send-button">
+                        <span class="text">send</span>
+                        <span class="icon-wrapper">
+                  <span class="icon-1 ion-paper-airplane"></span>
+                        <span class="icon-2 ion-checkmark"></span>
+                        </span>
+                    </div>
+                </div>
+            </form>
+        </footer>
+        <!-- Begin emoji-picker JavaScript -->
+        <script src="../js/config.js"></script>
+        <script src="../js/util.js"></script>
+        <script src="../js/jquery.emojiarea.js"></script>
+        <script src="../js/emoji-picker.js"></script>
+        <!-- End emoji-picker JavaScript -->
+        <script>
+            $(function() {
+               // Initializes and creates emoji set from sprite sheet
+               window.emojiPicker = new EmojiPicker({
+                  emojiable_selector: '[data-emojiable=true]',
+                  assetsPath: '../img/',
+                  popupButtonClasses: 'fa fa-smile-o'
+               });
+               // Finds all elements with `emojiable_selector` and converts them to rich emoji input fields
+               // You may want to delay this step if you have dynamically created input fields that appear later in the loading process
+               // It can be called as many times as necessary; previously converted input fields will not be converted again
+               window.emojiPicker.discover();
+             });
+             
+             $('#profilecloselink').click(function(){
+             
+               $('.profileSection').fadeOut(1200);
+                  $(".section").children().css('display','none');
+                  
+                  $("footer").css('display', 'block');
+                  $('.main-menu').css('bottom', '150px');
+                  $(".chatscreen").css('display','block');
+             
+             });
+             
+             
+             $('#btnVideoChat').click(function(){
+               //$('.videoChatInviteWait').fadeIn(1200);
+               socket.emit("videoChat", {senderId: socket.io.engine.id});
+             });
+             
+             $('#btnAudioChat').click(function(){
+               //$('.videoChatInviteWait').fadeIn(1200);
+               socket.emit("audioChat", {senderId: socket.io.engine.id});
+             });
+             
+             
+             $('#btnDownload').click(function(){
+               generate();
+             });
+             
+             $('#btnEmail').click(function(){
+               generateHtml();
+             });
+             
+             function acceptCall(){
+               var sound = document.getElementById("videoCallaudio");
+               //sound.volume = (volume.value)/100.0;
+                  sound.pause();
+               socket.emit("videoChatJoined", {senderId: socket.io.engine.id});
+             
+             };
+             
+             function cancelCall(){
+               socket.emit("videoChatCancelled", {senderId: socket.io.engine.id});
+             }
+             
+             function rejectCall(){
+               var sound = document.getElementById("videoCallaudio");
+               //sound.volume = (volume.value)/100.0;
+                sound.pause();
+               socket.emit("videoChatRejected", {senderId: socket.io.engine.id});
+             };
+             
+             function acceptAudioCall(){
+               var sound = document.getElementById("videoCallaudio");
+               //sound.volume = (volume.value)/100.0;
+                  sound.pause();
+               socket.emit("audioChatJoined", {senderId: socket.io.engine.id});
+             
+             };
+             
+             function cancelAudioCall(){
+               socket.emit("audioChatCancelled", {senderId: socket.io.engine.id});
+             }
+             
+             function rejectAudioCall(){
+               var sound = document.getElementById("videoCallaudio");
+               //sound.volume = (volume.value)/100.0;
+                  sound.pause();
+               socket.emit("audioChatRejected", {senderId: socket.io.engine.id});
+             };
+             
+             function turnOffVideo(){
+             
+               $('#VideoOn').toggle();
+               $('#VideoOff').toggle();
+               localStream.getVideoTracks()[0].enabled = false;
+             }
+             
+             function turnOnVideo(){
+             
+               $('#VideoOn').toggle();
+               $('#VideoOff').toggle();
+               localStream.getVideoTracks()[0].enabled = true;
+             }
+             
+             function muteCall(){
+               $('#VideoCallMute').toggle();
+               $('#VideoCallUnMute').toggle();
+             
+               localStream.getAudioTracks()[0].enabled = false;
+             }
+             
+             function unmuteCall(){
+               $('#VideoCallMute').toggle();
+               $('#VideoCallUnMute').toggle();
+             
+               localStream.getAudioTracks()[0].enabled = true;
+             }
+             function muteAudioCall(){
+               $('#AudioCallMute').toggle();
+               $('#AudioCallUnMute').toggle();
+             
+               localStream.getAudioTracks()[0].enabled = false;
+             }
+             
+             function unmuteAudioCall(){
+               $('#AudioCallMute').toggle();
+               $('#AudioCallUnMute').toggle();
+             
+               localStream.getAudioTracks()[0].enabled = true;
+             }
+             
+             $(".actionMenu").mouseover(function(){
+                    $(".icon").css("display", "");
+                  });
+             
+             
+             $(() => {
+                 var $sendBtn = $('.send-button'),
+                         $iWrapper = $('.icon-wrapper'),
+                         $i1 = $('.icon-1'),
+                         $i2 = $('.icon-2');
+             
+                 function animationEvent() {
+                     var t,
+                             el = document.createElement('fakeelement');
+             
+                     var animations = {
+                         animation: 'animationend',
+                         OAnimation: 'oAnimationEnd',
+                         MozAnimation: 'animationend',
+                         WebkitAnimation: 'webkitAnimationEnd'
+                     };
+             
+                     for (t in animations) {
+                         if (el.style[t] !== undefined) {
+                             return animations[t];
+                         }
+                     }
+                 }
+             
+                 $sendBtn.on('click', e => {
+                     $iWrapper.addClass('icon-wrapper-animation');
+                     $sendBtn.addClass('clicked');
+                     $i1.delay(900);
+                     $i1.fadeTo(300, 0);
+                     $i2.delay(900);
+                     $i2.fadeTo(300, 1);
+                 });
+             
+                 $sendBtn.on(animationEvent(), e => {
+                     if (e.originalEvent.animationName == 'input-shadow') {
+                         $sendBtn.removeClass('clicked');
+                     }
+                 });
+             
+                 $iWrapper.on(animationEvent(), e => {
+                     if (e.originalEvent.animationName == 'icon-animation') {
+                         $iWrapper.removeClass('icon-wrapper-animation');
+                         setTimeout(reset, 1200);
+                     }
+                 });
+             
+                 function reset() {
+                     $i1.fadeTo(250, 1);
+                     $i2.fadeTo(250, 0);
+                     $iWrapper.css('color', 'white');
+                 }
+             
+             
+                 $('#BtnVolume').on('click', e => {
+                  if ($('#volume-slider').css('display') == 'none')
+                     $('#volume-slider').css('display', 'flex');
+                   else
+                     $('#volume-slider').css('display', 'none');
+                 });
+             }); // end of document ready
+             
+             $('.send-button').click(function() {$('#chatform').submit()});
+             
+             $('#friendForm').submit(function(ev)
+             {
+               ev.preventDefault();
+             
+               var email = $('#friendEmail').val();
+               var userId = '<%= user._id%>';
+               socket.emit('addFriend', {friendEmail: email, userId: userId});
+             });
+             
+             function closeSuccessMessage()
+             {
+               $('.successMessage').fadeOut(800);
+             }
+             
+             function closeErrorMessage()
+             {
+             $('.errorMessage').fadeOut(800);
+             }
+             
+             $(".errorMessage").on('blur',function(){
+                 $(this).fadeOut(800);
+             });
+             
+             $(".successMessage").on('blur',function(){
+                 $(this).fadeOut(800);
+             });
+             
+             function deletefriend(friendId)
+             {
+               var userId = '<%= user._id%>';
+               socket.emit('deleteFriend', {friendId: friendId, userId: userId});
+             }
+             
+             $('#profileInfoUpdateForm').submit(function(ev) {
+                 ev.preventDefault(); // to stop the form from submitting
+                 var email = $('#emailUpdate').val();
+               var userId = '<%= user._id%>';
+               var username = $('#usernameUpdate').val();
+                 
+                  socket.emit('saveProfile', {email:email, username:username, userId: userId}); 
+             });
+             
+             $('#passwordUpdateForm').submit(function(ev) {
+                 ev.preventDefault(); // to stop the form from submitting
+               var userId = '<%= user._id%>';
+               var originalpwd = $('#originalpwdUpdate').val();
+               var newpwdUpdate = $('#newpwdUpdate').val();
+               var newpwdConfirm = $('#newpwdconfirmUpdate').val();
+                 
+                  socket.emit('savePassword', {oldpwd:originalpwd, newpwd:newpwdUpdate, newpwdConfirm: newpwdConfirm, userId: userId}); 
+             });
+             
+             function passwordConfirm(input) {
+               if (input.value != document.getElementById('newpwdUpdate').value) {
+                  input.setCustomValidity('The two passwords must match.');
+               } else {
+                  input.setCustomValidity('');
+               }
+             }
+               
+             if (window.location.pathname.split( '/' ).length >=2)
+             {
+               var loadedFriendId = window.location.pathname.split( '/' )[2];
+               $('#btn'+loadedFriendId).addClass("selected");
+             }
+        </script>
+        <script src="../js/moment.min.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script type="text/javascript">
+            var friendObj = <%- JSON.stringify(friend) %>
+             
+             var userObj = <%- JSON.stringify(user) %>
+             
+             var chatObj = <%- JSON.stringify(chat) %>
+             
+             var messagesObj = <%- JSON.stringify(messages) %>
+             var friendlistObj = <%- JSON.stringify(friendlist) %>
+        </script>
+        <script src="../js/chat.js"></script>
+        <script src="../js/voiceinput.js"></script>
+        <script src="../js/fireworks.js"></script>
+        <script src="../js/adapter.js"></script>
+        <!--<script src="../js/videoChat.js"></script>-->
+        <script src="../js/VideoAudioChat.js"></script>
+        <script src="../js/AudioChat.js"></script>
 </body>
 
 </html>
