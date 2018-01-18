@@ -5,33 +5,43 @@
 
 const APIAI_TOKEN = '0fa7fd48b5da40c381c4342bda4215ad';
 const APIAI_SESSION_ID = 'randomshit';
+const conString = "mongodb://admin:admin1234@ds249727.mlab.com:49727/chatubesandbox"
 
-var mongoose = require("mongoose");
-var express = require('express'),
+
+var mongoose = require("mongoose"),
+ session = require('express-session'),
+ MongoStore = require('connect-mongo')(session),
+ express = require('express'),
  fs=require('fs'),
- //https = require('https');
- app = express();
+ https = require('https');
+ app = express(),
+ favicon = require('serve-favicon');
+
+app.use(favicon(__dirname + '/public/img/favicon.ico'));
 
 const WebSocket = require('ws');
 const WebSocketServer = WebSocket.Server;
 
 
-var conString = "mongodb://yusheng:killsometime531@ds239117.mlab.com:39117/chatubesandbox"
+mongoose.connect(conString);
 
-/**
- * Models 
- */
-var User = mongoose.model("User", {
-    username: String,
-    password: String
-})
+var db = mongoose.connection;
 
+//handle mongo error
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function () {
+  console.log("DB is connected")
+});
 
-
-mongoose.connect(conString, { useMongoClient: true }, () => {
-    console.log("DB is connected")
-})
-
+//use sessions for tracking logins
+app.use(session({
+  secret: 'work hard',
+  resave: true,
+  saveUninitialized: false,
+  store: new MongoStore({
+    mongooseConnection: db
+  })
+}));
 
 //var options = {
 //  key: fs.readFileSync('./public/sslKeys/key.pem'),
@@ -60,7 +70,7 @@ const apiai = require('apiai')(APIAI_TOKEN);
 
 
 require('./config')(app, io);
-require('./routes')(app, io);
+require('./routes/routes')(app, io);
 
 
 io.on('connection', function(socket) {
